@@ -1,0 +1,3 @@
+- Bluesky: [@gothamdataclinic.org](https://bsky.app/profile/gothamdataclinic.org)
+- LinkedIn: [Gotham Data Clinic](https://www.linkedin.com/company/gothamdataclinic/)
+- Website: <https://gothamdataclinic.org>

@@ -1,0 +1,1 @@
+Gotham Data Clinic is a New York City-based charitable organization whose mission is to train the next generation of scientists and technologists in computing and data science skills as well as inform and engage the general public in conversation on these topics.
