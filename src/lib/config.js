@@ -20,13 +20,13 @@ export const navItems = [
 		title: 'About',
 		route: '/about'
 	}, {
-		title: 'Team (wip)',
+		title: 'Team',
 		route: '/team'
+	// }, {
+	// 	title: 'Contact',
+	// 	route: '/contact' 
 	}, {
-		title: 'Contact',
-		route: '/contact' 
-	}, {
-		title: 'Blog (coming soon!)',
-		route: '#' 
+		title: 'Donate',
+		route: '/donate' 
 	},
 ]
