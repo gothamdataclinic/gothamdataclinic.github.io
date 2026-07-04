@@ -55,10 +55,6 @@ src/
     getRequestOrigin.ts   — trusts X-Forwarded-Host/Proto (see "A quirk worth knowing")
     siteUrl.ts             — shared SITE_URL constant (CORS + live-preview links)
   proxy.ts                — root-path (`/`) → `/admin` redirect
-scripts/                  — one-off content migration scripts (not run at runtime):
-                             seed.ts, seed-followup.ts, seed-followup2.ts (old-site
-                             → Payload migration), migrate-site-settings.ts (the
-                             SiteSettings → per-page-globals split), update-vision-intro.ts
 ```
 
 **Auth:** the built-in `users` collection keeps its default email/password strategy (a break-glass fallback, revealed by clicking the logo on the login screen) plus a custom `google-workspace` strategy built on **Supabase Auth's Google provider** rather than a hand-rolled OAuth client. Supabase still needs a Google Cloud OAuth Client ID/Secret under the hood, it's just registered against Supabase's own callback URL (configured in Supabase Dashboard → Authentication → Providers → Google), not this app's.

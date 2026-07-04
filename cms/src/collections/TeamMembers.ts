@@ -54,14 +54,8 @@ export const TeamMembers: CollectionConfig = {
     {
       name: 'tags',
       label: 'Expertise Tags (e.g. Data Science, Neuroscience)',
-      type: 'array',
-      fields: [
-        {
-          name: 'tag',
-          type: 'text',
-          label: 'Tag',
-        },
-      ],
+      type: 'text',
+      hasMany: true,
     },
     {
       name: 'order',

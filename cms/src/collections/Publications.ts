@@ -22,10 +22,8 @@ export const Publications: CollectionConfig = {
     {
       name: 'authors',
       label: 'Authors',
-      type: 'array',
-      fields: [
-        { name: 'name', label: 'Author Name', type: 'text' },
-      ],
+      type: 'text',
+      hasMany: true,
     },
     {
       name: 'journal',

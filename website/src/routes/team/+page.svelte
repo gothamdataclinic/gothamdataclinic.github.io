@@ -66,7 +66,7 @@
             <p class="sm-body">{member.bio}</p>
             <div class="tags">
               {#each (member.tags ?? []) as tag}
-                <span class="tag">{tag}</span>
+                <span class="tag">{typeof tag === 'string' ? tag : tag.tag}</span>
               {/each}
             </div>
           </div>
@@ -96,7 +96,7 @@
             <p class="sm-body">{member.bio}</p>
             <div class="tags">
               {#each (member.tags ?? []) as tag}
-                <span class="tag">{tag}</span>
+                <span class="tag">{typeof tag === 'string' ? tag : tag.tag}</span>
               {/each}
             </div>
           </div>

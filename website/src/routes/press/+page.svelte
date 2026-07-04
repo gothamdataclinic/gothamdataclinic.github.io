@@ -36,7 +36,7 @@
                 </div>
                 <h3>{pub.title}</h3>
                 {#if pub.authors?.length}
-                  <p class="authors">{pub.authors.map((a: any) => typeof a === 'string' ? a : a.name).join(', ')}</p>
+                  <p class="authors">{pub.authors.join(', ')}</p>
                 {/if}
                 {#if pub.abstract}
                   <p class="sm-body abstract">{pub.abstract}</p>

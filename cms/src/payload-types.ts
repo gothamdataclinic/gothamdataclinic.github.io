@@ -209,12 +209,7 @@ export interface Media {
 export interface Publication {
   id: number;
   title: string;
-  authors?:
-    | {
-        name?: string | null;
-        id?: string | null;
-      }[]
-    | null;
+  authors?: string[] | null;
   journal?: string | null;
   year?: number | null;
   abstract?: string | null;
@@ -258,12 +253,7 @@ export interface TeamMember {
   memberType: 'current' | 'founding';
   photo?: (number | null) | Media;
   bio?: string | null;
-  tags?:
-    | {
-        tag?: string | null;
-        id?: string | null;
-      }[]
-    | null;
+  tags?: string[] | null;
   order?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -408,12 +398,7 @@ export interface EventsSelect<T extends boolean = true> {
  */
 export interface PublicationsSelect<T extends boolean = true> {
   title?: T;
-  authors?:
-    | T
-    | {
-        name?: T;
-        id?: T;
-      };
+  authors?: T;
   journal?: T;
   year?: T;
   abstract?: T;
@@ -489,12 +474,7 @@ export interface TeamMembersSelect<T extends boolean = true> {
   memberType?: T;
   photo?: T;
   bio?: T;
-  tags?:
-    | T
-    | {
-        tag?: T;
-        id?: T;
-      };
+  tags?: T;
   order?: T;
   updatedAt?: T;
   createdAt?: T;
