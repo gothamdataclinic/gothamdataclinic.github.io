@@ -74,7 +74,7 @@ export async function getSiteSettings() {
 }
 
 // ── Media URL helper ─────────────────────────────────────────
-export function mediaUrl(filename: string | null | undefined): string | null {
+function mediaUrl(filename: string | null | undefined): string | null {
   if (!filename) return null
   if (filename.startsWith('http')) return filename
   return `${CMS_URL}/media/${filename}`
