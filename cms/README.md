@@ -1,65 +1,75 @@
 # Gotham Data Clinic — CMS (Payload)
 
-Self-hosted content management system for gothamdataclinic.org. Your team uses this to manage all website content — no code required.
+Self-hosted content management system for gothamdataclinic.org. Your team uses this to manage all website content — no code required. See [`../ARCHITECTURE.md`](../ARCHITECTURE.md) for the full technical picture.
 
 ## What your team can manage
 
-| Section | What they can do |
+| Section (admin sidebar group) | What they can do |
 |---|---|
-| **Team Members** | Add/remove members, upload headshots, edit bios, set roles |
-| **Events** | Add events with dates, times, locations, registration links, images |
-| **Publications** | Add papers with authors, journal, year, abstract, DOI/PDF links |
-| **Programs** | Edit program descriptions shown on the homepage |
-| **Site Settings → Donation** | Paste any donation platform URL (PayPal, Donorbox, Stripe, etc.) |
-| **Site Settings → Background Images** | Upload new hero images for any page |
-| **Site Settings → Tax & Legal** | Update EIN, upload Form 990s and tax documents |
+| **Home** (Pages) | Hero headline/image, mission statement and intro copy |
+| **About** (Pages) | Vision copy, full mission statement, mission pillars, history timeline |
+| **Events** (Pages) | Add events with dates, times, locations, registration links, images |
+| **Publications** (Pages) | Add papers/press with authors, journal, year, abstract, DOI/PDF links |
+| **Donate** (Pages) | Hero headline, donation platform URL, impact blurbs |
+| **Tax & Legal** (Pages) | EIN, tax-exempt status, tax documents, donor FAQs |
+| **Programs** (Content) | Edit program descriptions shown on the homepage |
+| **Media** (Content) | All uploaded images/PDFs used across the site |
+| **Team Members** (Admin) | Add/remove members, upload headshots, edit bios, set roles |
+| **General** (Site-wide) | Site logo, social links, contact email, and copy shared across pages (vision quote, org stats) |
+
+Each page under **Pages** has a **Preview** button in its edit view that opens the real live page in a new tab.
 
 ---
 
 ## Setup (one-time, done by a developer)
 
-### Step 1 — Configure environment
+### 1. Configure environment
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env`:
-- Set `PAYLOAD_SECRET` to a long random string
-- Set `SITE_URL` to your website URL
+Edit `.env` — see the comments in the file for where each value comes from:
+- `PAYLOAD_SECRET` — a long random string
+- `SITE_URL` — the public website's URL (used for CORS + live-preview links)
+- `DATABASE_URL` — Supabase Postgres connection string (session pooler, port 5432)
+- `SUPABASE_S3_*`, `SUPABASE_STORAGE_BUCKET` — Supabase Storage credentials
+- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `ALLOWED_EMAIL_DOMAIN` — Google Workspace admin login via Supabase Auth
 
-### Step 2 — Install and start
+### 2. Install and start
 
 ```bash
 npm install
 npm run dev
 ```
 
-Visit `http://localhost:3001/admin` — you'll be prompted to create your first admin account.
+Visit `http://localhost:3000/admin`.
 
-### Step 3 — Deploy to your server
+### 3. Deploy
 
 ```bash
 npm run build
-node dist/server.js
+npm run start
 ```
 
-Deploy to Railway, Render, or any Node.js server. The SQLite database (`gdc-content.db`) is stored as a single file on your server — back it up regularly.
+Deployed to Render (root directory `cms`, build/start commands and env vars set directly in the Render dashboard — there's no `render.yaml` in this repo). Content lives in Supabase Postgres, not on the server itself — there's no local database file to back up.
 
 ---
 
 ## How team members log in
 
-1. Go to `https://your-cms-url/admin` in any browser
-2. Log in with email and password
-3. Use the left sidebar to navigate to Team Members, Events, Publications, etc.
-4. Make changes and click **Save** — the website updates immediately
+1. Go to `https://cms.gothamdataclinic.org/admin`
+2. Click **Sign in with Google** — must be a `@gothamdataclinic.org` account
+3. Use the left sidebar (grouped as **Pages** / **Content** / **Admin** / **Site-wide**, in that order) to navigate
+4. Make changes and click **Save** — the website updates on next page load, no rebuild needed
+
+There's also a local email/password login as a break-glass fallback — click the logo on the login screen to reveal it.
 
 ---
 
 ## Adding a new team member (step by step)
 
-1. Click **Team Members** in the left sidebar
+1. Click **Team Members** in the left sidebar (under **Admin**)
 2. Click **Create New** (top right)
 3. Fill in: Full Name, Credentials, Role, Member Type
 4. Click **Upload** next to Photo to add a headshot
@@ -72,18 +82,15 @@ Deploy to Railway, Render, or any Node.js server. The SQLite database (`gdc-cont
 ## Architecture
 
 ```
-gdc-payload/          ← This CMS (runs on your server, port 3001)
+cms/                  ← This CMS (runs on Render, cms.gothamdataclinic.org)
   src/
-    collections/      ← Content types (TeamMembers, Events, etc.)
-    globals/          ← Site-wide settings (SiteSettings)
+    collections/      ← Repeatable content: Events, Publications, Programs, Media, TeamMembers
+    globals/          ← Singleton page content: Home, About, Donate, TaxInfo, General
     payload.config.ts ← Main configuration
-  gdc-content.db      ← SQLite database (all your content lives here)
-  public/media/       ← Uploaded images and files
+    components/       ← Custom admin UI: Google sign-in, logout, sidebar ordering
 
-gdc-svelte/           ← The public website (runs on port 3000 or 5173)
-  src/lib/cms.ts      ← Fetches content from this CMS via REST API
+website/              ← The public website (runs on GitHub Pages)
+  src/lib/cms.ts       ← Fetches content from this CMS via REST API
 ```
 
-## Color Palette
-
-Navy `#1D2B4A` | Ink `#131B2E` | Slate `#3D4A73` | Ember `#D9581F` | Canvas `#F3F5FA` | Paper `#FFFFFF`
+Content lives in Supabase Postgres; uploads live in Supabase Storage — nothing is stored on the CMS server's own filesystem.

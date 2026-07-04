@@ -2,11 +2,11 @@
  * Gotham Data Clinic — CMS Client
  * Fetches content from the self-hosted Payload CMS REST API.
  *
- * The CMS runs at CMS_URL (default: http://localhost:3001)
+ * The CMS runs at CMS_URL (default: http://localhost:3000, Next.js's default dev port)
  * Set the VITE_CMS_URL environment variable to point to your deployed CMS.
  */
 
-const CMS_URL = import.meta.env.VITE_CMS_URL || 'http://localhost:3001'
+const CMS_URL = import.meta.env.VITE_CMS_URL || 'http://localhost:3000'
 
 async function fetchAPI(path: string) {
   try {
