@@ -54,7 +54,7 @@
       {#each displayCurrent as member, i}
         <div class="member-card card-hover">
           {#if uploadUrl(member.photo)}
-            <img class="avatar" src={uploadUrl(member.photo)} alt={member.name} style="object-fit:cover;" />
+            <img class="avatar" src={uploadUrl(member.photo)} alt={member.name} />
           {:else}
             <div class="avatar" style="background:{avatarColors[i % avatarColors.length].bg}; color:{avatarColors[i % avatarColors.length].text};">
               {initials(member.name)}
@@ -84,7 +84,7 @@
       {#each displayFounding as member, i}
         <div class="member-card card-hover">
           {#if uploadUrl(member.photo)}
-            <img class="avatar" src={uploadUrl(member.photo)} alt={member.name} style="object-fit:cover;" />
+            <img class="avatar" src={uploadUrl(member.photo)} alt={member.name} />
           {:else}
             <div class="avatar" style="background:{avatarColors[(i+2) % avatarColors.length].bg}; color:{avatarColors[(i+2) % avatarColors.length].text};">
               {initials(member.name)}
@@ -129,11 +129,15 @@ h3{font-size:1.125rem;font-weight:700;color:#1D2B4A;margin-bottom:.75rem;}
 .team-grid{display:grid;gap:2rem;}
 @media(min-width:640px){.team-grid{grid-template-columns:repeat(2,1fr);}}
 @media(min-width:1024px){.team-grid{grid-template-columns:repeat(3,1fr);}}
-.member-card{background:white;border:1px solid #DDE2EE;overflow:hidden;}
-.avatar{height:10rem;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:800;letter-spacing:-.02em;}
-.member-body{padding:1.5rem;}
+.member-card{position:relative;background:#1D2B4A;overflow:hidden;min-height:18rem;}
+.avatar{position:absolute;inset:0 0 0 auto;width:55%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:800;letter-spacing:-.02em;object-fit:cover;}
+img.avatar{opacity:.55;}
+.member-card::before{content:'';position:absolute;inset:0;background:linear-gradient(to right, #1D2B4A 35%, rgba(29,43,74,.65) 55%, rgba(29,43,74,0) 100%);z-index:1;}
+.member-body{position:relative;z-index:2;max-width:72%;padding:1.5rem;}
+.member-card h3{color:white;}
+.member-card .sm-body{color:rgba(255,255,255,.75);}
 .tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem;}
-.tag{font-size:.75rem;padding:.25rem .5rem;background:#F3F5FA;color:#1D2B4A;}
+.tag{font-size:.75rem;padding:.25rem .5rem;background:rgba(255,255,255,.12);color:white;}
 .cta-ember{background:#D9581F;padding:4rem 0;}
 .cta-row{display:flex;flex-direction:column;gap:1.5rem;}
 @media(min-width:640px){.cta-row{flex-direction:row;align-items:center;justify-content:space-between;}}
