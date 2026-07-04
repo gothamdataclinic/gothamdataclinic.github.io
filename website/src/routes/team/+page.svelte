@@ -1,0 +1,142 @@
+<script lang="ts">
+  import type { PageData } from './$types'
+  import { uploadUrl, FALLBACK_IMAGES } from '$lib/cms'
+  let { data }: { data: PageData } = $props()
+
+  let heroImage = $derived(uploadUrl(data.settings?.teamHeroImage) || FALLBACK_IMAGES.missionVisual)
+
+  const avatarColors = [
+    { bg: '#1D2B4A', text: '#D9581F' },
+    { bg: '#3D4A73', text: '#FFFFFF' },
+    { bg: '#D9581F', text: '#FFFFFF' },
+    { bg: '#131B2E', text: '#D9581F' },
+    { bg: '#1D2B4A', text: '#FFFFFF' },
+  ]
+
+  function initials(name: string) {
+    return name.split(' ').filter(w => /^[A-Z]/.test(w)).slice(0,2).map(w => w[0]).join('')
+  }
+
+  let current = $derived((data.team ?? []).filter((m: any) => m.memberType === 'current'))
+  let founding = $derived((data.team ?? []).filter((m: any) => m.memberType === 'founding'))
+
+  // Fallback static data if Sanity not yet connected
+  const staticCurrent = [
+    { _id:'1', name:'Eric Chen, Ph.D', role:'Team Member', bio:'Eric is a Brooklyn native who joined GDC while performing computational chemistry research at NYU. He recently led the development of the Chemistry department’s first STEM outreach program with local high schools.', tags:['Computational Chemistry','STEM Outreach','NYU'] },
+    { _id:'2', name:'Nicolas Bustamente', role:'Team Member', bio:'Nicholas is from Queens, New York, and graduated as a Computer Engineer from Binghamton University in 2024. He is now an ETL Developer for MUFG Securities, joining the Gotham Data Clinic team in 2025.', tags:['Computer Engineering','ETL Development','Data Engineering'] },
+  ]
+  const staticFounding = [
+    { _id:'3', name:'Teon Brooks, Ph.D', role:'Co-Founder & President', bio:'Teon is the co-founder and President of Gotham Data Clinic. A trained cognitive scientist with extensive experience in data science and research software engineering, he has over a decade of open-source software contribution, primarily in brain imaging research.', tags:['Cognitive Science','Data Science','Brain Imaging','Open Source'] },
+    { _id:'4', name:'Mya Doelling, MBA', role:'Founding Member', bio:'Mya joined GDC while serving as a Manager of Global Partnerships at the International Olympic Committee. Prior to her current role, Mya began her career as Director of Operations for the Michael Phelps Foundation.', tags:['Global Partnerships','Operations','Nonprofit Leadership'] },
+    { _id:'5', name:'Steven Azeka, Ed.D', role:'Founding Member', bio:'Steve joined Gotham Data Clinic while serving as a Program Lead for Responsible Computing at Mozilla and an Adjunct at the College of Staten Island. He taught STEM at the elementary and high school levels in California and New York.', tags:['Responsible Computing','Mozilla','Education','BrainWaves'] },
+  ]
+
+  let displayCurrent = $derived(current.length ? current : staticCurrent)
+  let displayFounding = $derived(founding.length ? founding : staticFounding)
+</script>
+
+<svelte:head><title>Our Team | Gotham Data Clinic</title></svelte:head>
+
+<section class="page-hero">
+  <div class="hero-bg" style="background-image:url('{heroImage}');"></div>
+  <div class="container" style="position:relative;z-index:10;">
+    <span class="section-label fade-up">Our People</span>
+    <h1 class="fade-up-1">The Team Behind Gotham Data Clinic</h1>
+    <p class="hero-sub fade-up-2">A dedicated group of researchers, educators, and technologists committed to expanding access to computational education in New York City.</p>
+  </div>
+</section>
+
+<section class="sec-white">
+  <div class="container">
+    <span class="section-label">Current Team</span>
+    <h2>Team Members</h2>
+    <div class="team-grid">
+      {#each displayCurrent as member, i}
+        <div class="member-card card-hover">
+          {#if uploadUrl(member.photo)}
+            <img class="avatar" src={uploadUrl(member.photo)} alt={member.name} style="object-fit:cover;" />
+          {:else}
+            <div class="avatar" style="background:{avatarColors[i % avatarColors.length].bg}; color:{avatarColors[i % avatarColors.length].text};">
+              {initials(member.name)}
+            </div>
+          {/if}
+          <div class="member-body">
+            <span class="section-label">{member.role}</span>
+            <h3>{member.name}</h3>
+            <p class="sm-body">{member.bio}</p>
+            <div class="tags">
+              {#each (member.tags ?? []) as tag}
+                <span class="tag">{tag}</span>
+              {/each}
+            </div>
+          </div>
+        </div>
+      {/each}
+    </div>
+  </div>
+</section>
+
+<section class="sec-canvas">
+  <div class="container">
+    <span class="section-label">Founding Members</span>
+    <h2>The Founders</h2>
+    <div class="team-grid">
+      {#each displayFounding as member, i}
+        <div class="member-card card-hover">
+          {#if uploadUrl(member.photo)}
+            <img class="avatar" src={uploadUrl(member.photo)} alt={member.name} style="object-fit:cover;" />
+          {:else}
+            <div class="avatar" style="background:{avatarColors[(i+2) % avatarColors.length].bg}; color:{avatarColors[(i+2) % avatarColors.length].text};">
+              {initials(member.name)}
+            </div>
+          {/if}
+          <div class="member-body">
+            <span class="section-label">{member.role}</span>
+            <h3>{member.name}</h3>
+            <p class="sm-body">{member.bio}</p>
+            <div class="tags">
+              {#each (member.tags ?? []) as tag}
+                <span class="tag">{tag}</span>
+              {/each}
+            </div>
+          </div>
+        </div>
+      {/each}
+    </div>
+  </div>
+</section>
+
+<section class="cta-ember">
+  <div class="container cta-row">
+    <div>
+      <h3 style="color:#1D2B4A;">Support the work of our team</h3>
+      <p style="color:rgba(29,43,74,.7);font-size:.875rem;margin-top:.25rem;">Your donation funds our programs and the people who make them possible</p>
+    </div>
+    <a href="/donate" class="btn-navy">Donate Now →</a>
+  </div>
+</section>
+
+<style>
+.page-hero{position:relative;padding:10rem 0 5rem;overflow:hidden;background:#1D2B4A;}
+.hero-bg{position:absolute;inset:0;opacity:.15;background-size:cover;background-position:center;}
+.hero-sub{font-size:1.125rem;line-height:1.7;color:rgba(255,255,255,.65);max-width:40rem;margin-top:1.5rem;}
+h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:800;color:white;line-height:1.15;}
+h2{font-size:clamp(1.5rem,3vw,2.25rem);font-weight:800;color:#1D2B4A;line-height:1.25;margin-bottom:2rem;}
+h3{font-size:1.125rem;font-weight:700;color:#1D2B4A;margin-bottom:.75rem;}
+.sm-body{font-size:.875rem;line-height:1.6;color:#3D4A73;}
+.sec-white{background:#fff;padding:5rem 0;}
+.sec-canvas{background:#F3F5FA;padding:5rem 0;}
+.team-grid{display:grid;gap:2rem;}
+@media(min-width:640px){.team-grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:1024px){.team-grid{grid-template-columns:repeat(3,1fr);}}
+.member-card{background:white;border:1px solid #DDE2EE;overflow:hidden;}
+.avatar{height:10rem;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:800;letter-spacing:-.02em;}
+.member-body{padding:1.5rem;}
+.tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem;}
+.tag{font-size:.75rem;padding:.25rem .5rem;background:#F3F5FA;color:#1D2B4A;}
+.cta-ember{background:#D9581F;padding:4rem 0;}
+.cta-row{display:flex;flex-direction:column;gap:1.5rem;}
+@media(min-width:640px){.cta-row{flex-direction:row;align-items:center;justify-content:space-between;}}
+.btn-navy{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 2rem;background:#1D2B4A;color:white;font-size:.8125rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;transition:background .2s;}
+.btn-navy:hover{background:#131B2E;}
+</style>

@@ -1,0 +1,14 @@
+// Google Workspace is the primary admin login method — hide the built-in
+// email/password login form (the .login__form block: email/username field,
+// password field, forgot-password link, and submit button) by default.
+//
+// Failsafe: clicking the GDC logo (LoginLogo.tsx) toggles a class on <body>
+// that reveals this form again, for the local-strategy break-glass account
+// when Google/Supabase Auth is unavailable.
+.login__form {
+  display: none;
+}
+
+body.reveal-local-login .login__form {
+  display: block;
+}

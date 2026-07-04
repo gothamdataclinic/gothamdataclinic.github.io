@@ -1,0 +1,44 @@
+{
+  "name": "gdc-payload",
+  "version": "1.0.0",
+  "description": "Gotham Data Clinic — Self-hosted CMS (Payload)",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap",
+    "migrate:create": "payload migrate:create",
+    "migrate": "payload migrate",
+    "seed": "node --env-file=.env --import tsx scripts/seed.ts",
+    "seed:followup": "node --env-file=.env --import tsx scripts/seed-followup.ts",
+    "seed:followup2": "node --env-file=.env --import tsx scripts/seed-followup2.ts"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "^3.85.2",
+    "@payloadcms/next": "^3.85.2",
+    "@payloadcms/richtext-lexical": "^3.85.2",
+    "@payloadcms/storage-s3": "^3.85.2",
+    "@payloadcms/ui": "^3.85.2",
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.110.0",
+    "graphql": "^16.0.0",
+    "next": "^16.2.6",
+    "payload": "^3.85.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sharp": "^0.33.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tsx": "^4.23.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
