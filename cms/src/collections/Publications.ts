@@ -6,7 +6,8 @@ export const Publications: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'journal', 'year', 'publicationType'],
-    description: 'Add peer-reviewed papers, conference proceedings, and reports. Paste the DOI or PDF link so visitors can access the full paper.',
+    description: 'Add peer-reviewed papers, conference proceedings, and reports. Paste the DOI or PDF link so visitors can access the full paper. Shown on the /press page.',
+    group: 'Pages',
   },
   access: {
     read: () => true,

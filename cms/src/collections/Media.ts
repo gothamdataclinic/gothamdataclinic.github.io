@@ -5,6 +5,7 @@ export const Media: CollectionConfig = {
   labels: { singular: 'Media File', plural: 'Media Files' },
   admin: {
     description: 'Upload images, PDFs, and other files here. These are used by team member photos, event images, and tax documents.',
+    group: 'Content',
   },
   access: {
     read: () => true,

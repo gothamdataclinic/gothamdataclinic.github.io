@@ -95,7 +95,7 @@
         {#if logoUrl}
           <img src={logoUrl} alt="GDC" style="height:32px;filter:brightness(0) invert(1);" />
         {/if}
-        <span style="font-weight:700;font-size:.875rem;color:white;">Gotham Data Clinic</span>
+        <span style="font-weight:700;font-size:1.25rem;color:white;">Gotham Data Clinic</span>
       </div>
       {#each navLinks as link}
         <a
@@ -115,7 +115,7 @@
   .nav-inner { display:flex; align-items:center; justify-content:space-between; height:72px; }
   .logo-wrap { display:flex; align-items:center; gap:.75rem; text-decoration:none; }
   .logo-img { height:36px; width:auto; transition:filter .3s; }
-  .logo-text { font-weight:700; font-size:.875rem; letter-spacing:.04em; transition:color .3s; white-space:nowrap; }
+  .logo-text { font-weight:700; font-size:1.25rem; letter-spacing:.02em; transition:color .3s; white-space:nowrap; }
   .desktop-nav { display:none; align-items:center; gap:1.5rem; }
   @media(min-width:1024px) { .desktop-nav { display:flex; } }
   .nav-link { font-weight:500; font-size:.9375rem; position:relative; padding-bottom:2px; transition:color .3s; }

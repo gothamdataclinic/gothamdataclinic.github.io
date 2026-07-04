@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types'
-  import { uploadUrl, FALLBACK_IMAGES } from '$lib/cms'
+  import { uploadUrl } from '$lib/cms'
   let { data }: { data: PageData } = $props()
 
   let selectedAmount = $state(100)
@@ -13,9 +13,9 @@
     { title: 'Advance Research', description: 'Support our scholarly publications and public engagement efforts that contribute to the national conversation on responsible computing education.' },
   ]
 
-  let donationUrl = $derived(data.settings?.donationUrl || 'https://www.paypal.com/donate/?hosted_button_id=GOTHAMDATACLINIC')
-  let donationPlatform = $derived(data.settings?.donationPlatformName || '')
-  let heroImage = $derived(uploadUrl(data.settings?.donateHeroImage) || FALLBACK_IMAGES.heroBg)
+  let donationUrl = $derived(data.settings?.donationUrl || 'https://donorbox.org/give-to-gotham-data-clinic')
+  let donationPlatform = $derived(data.settings?.donationPlatformName || 'Donorbox')
+  let heroImage = $derived(uploadUrl(data.settings?.donateHeroImage))
   let ein = $derived(data.settings?.ein || '84-3894797')
   let finalAmount = $derived(customAmount ? parseInt(customAmount) : selectedAmount)
   let donationIntro = $derived(data.settings?.donationIntro || 'Gotham Data Clinic is entirely supported by the generosity of donors like you. Your gift helps us bring world-class data science education to students across New York City who need it most.')
@@ -25,7 +25,7 @@
 
 <svelte:head><title>Donate | Gotham Data Clinic</title></svelte:head>
 
-<section class="page-hero" style="background-image: url('{heroImage}');">
+<section class="page-hero" style={heroImage ? `background-image: url('${heroImage}');` : ''}>
   <div class="hero-overlay"></div>
   <div class="container hero-inner">
     <span class="section-label fade-up">Support Our Work</span>
@@ -87,7 +87,7 @@
 </section>
 
 <style>
-.page-hero{position:relative;padding:10rem 0 5rem;overflow:hidden;background-size:cover;background-position:center;}
+.page-hero{position:relative;padding:10rem 0 5rem;overflow:hidden;background-color:#1D2B4A;background-size:cover;background-position:center;}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(19,27,46,.92) 0%,rgba(19,27,46,.7) 60%,rgba(19,27,46,.3) 100%);}
 .hero-inner{position:relative;z-index:10;}
 .hero-sub{font-size:1.125rem;line-height:1.7;color:rgba(255,255,255,.7);max-width:40rem;margin-top:1.5rem;}

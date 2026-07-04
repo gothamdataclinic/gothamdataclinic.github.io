@@ -3,6 +3,8 @@
   let { data }: { data: PageData } = $props()
 
   let events = $derived(data.events ?? [])
+  let upcomingEvents = $derived(events.filter((e: any) => new Date(e.date).getTime() >= Date.now()))
+  let pastEvents = $derived(events.filter((e: any) => new Date(e.date).getTime() < Date.now()))
 
   function formatDate(dateStr: string) {
     return new Date(dateStr).toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' })
@@ -24,38 +26,54 @@
 
 <section class="sec-canvas">
   <div class="container">
+    {#snippet eventRow(event: any)}
+      <div class="event-row card-hover">
+        <div class="event-date-col">
+          <div class="month">{new Date(event.date).toLocaleDateString('en-US',{month:'short'}).toUpperCase()}</div>
+          <div class="day">{new Date(event.date).getDate()}</div>
+          <div class="year">{new Date(event.date).getFullYear()}</div>
+        </div>
+        <div class="event-info">
+          {#if event.featured}<span class="section-label">Featured Event</span>{/if}
+          {#if event.eventType}<span class="event-type">{event.eventType}</span>{/if}
+          <h3>{event.title}</h3>
+          <div class="event-meta">
+            <span>📅 {formatDate(event.date)} at {formatTime(event.date)}</span>
+            {#if event.location}<span>📍 {event.location}</span>{/if}
+          </div>
+          {#if event.description}<p class="sm-body" style="margin-top:.75rem;">{event.description}</p>{/if}
+          {#if event.websiteUrl}<a href={event.websiteUrl} target="_blank" rel="noopener" class="tlink" style="display:inline-block;margin-top:.75rem;">Event Website →</a>{/if}
+        </div>
+        <div class="event-cta">
+          {#if event.registrationUrl}
+            <a href={event.registrationUrl} target="_blank" rel="noopener" class="btn-ember">Register →</a>
+          {/if}
+        </div>
+      </div>
+    {/snippet}
+
     {#if events.length === 0}
       <div class="empty">
         <p>No upcoming events at this time. Check back soon or <a href="mailto:info@gothamdataclinic.org">contact us</a> to stay informed.</p>
       </div>
     {:else}
-      <div class="events-list">
-        {#each events as event}
-          <div class="event-row card-hover">
-            <div class="event-date-col">
-              <div class="month">{new Date(event.date).toLocaleDateString('en-US',{month:'short'}).toUpperCase()}</div>
-              <div class="day">{new Date(event.date).getDate()}</div>
-              <div class="year">{new Date(event.date).getFullYear()}</div>
-            </div>
-            <div class="event-info">
-              {#if event.featured}<span class="section-label">Featured Event</span>{/if}
-              {#if event.eventType}<span class="event-type">{event.eventType}</span>{/if}
-              <h3>{event.title}</h3>
-              <div class="event-meta">
-                <span>📅 {formatDate(event.date)} at {formatTime(event.date)}</span>
-                {#if event.location}<span>📍 {event.location}</span>{/if}
-              </div>
-              {#if event.description}<p class="sm-body" style="margin-top:.75rem;">{event.description}</p>{/if}
-              {#if event.websiteUrl}<a href={event.websiteUrl} target="_blank" rel="noopener" class="tlink" style="display:inline-block;margin-top:.75rem;">Event Website →</a>{/if}
-            </div>
-            <div class="event-cta">
-              {#if event.registrationUrl}
-                <a href={event.registrationUrl} target="_blank" rel="noopener" class="btn-ember">Register →</a>
-              {/if}
-            </div>
-          </div>
-        {/each}
-      </div>
+      {#if upcomingEvents.length > 0}
+        <h2 class="events-section-header">Upcoming Events</h2>
+        <div class="events-list">
+          {#each upcomingEvents as event}
+            {@render eventRow(event)}
+          {/each}
+        </div>
+      {/if}
+
+      {#if pastEvents.length > 0}
+        <h2 class="events-section-header" style={upcomingEvents.length > 0 ? 'margin-top:3rem;' : ''}>Past Events</h2>
+        <div class="events-list">
+          {#each pastEvents as event}
+            {@render eventRow(event)}
+          {/each}
+        </div>
+      {/if}
     {/if}
   </div>
 </section>
@@ -77,6 +95,7 @@ h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:800;color:white;line-height:1.15
 h3{font-size:1.25rem;font-weight:700;color:#1D2B4A;margin-bottom:.5rem;}
 .sm-body{font-size:.875rem;line-height:1.6;color:#3D4A73;}
 .sec-canvas{background:#F3F5FA;padding:5rem 0;}
+.events-section-header{font-size:1.25rem;font-weight:800;color:#1D2B4A;margin-bottom:1.5rem;}
 .events-list{display:flex;flex-direction:column;gap:1.5rem;}
 .event-row{display:grid;grid-template-columns:auto 1fr auto;gap:2rem;align-items:start;background:white;padding:2rem;border:1px solid #DDE2EE;}
 @media(max-width:640px){.event-row{grid-template-columns:1fr;}}

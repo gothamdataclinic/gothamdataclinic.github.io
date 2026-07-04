@@ -7,6 +7,7 @@ export const Programs: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'label', 'order'],
     description: 'Edit program descriptions shown on the homepage and About page.',
+    group: 'Content',
   },
   access: {
     read: () => true,

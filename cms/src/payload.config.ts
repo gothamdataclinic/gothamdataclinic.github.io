@@ -11,8 +11,13 @@ import { Events } from './collections/Events'
 import { Publications } from './collections/Publications'
 import { Programs } from './collections/Programs'
 import { Media } from './collections/Media'
-import { SiteSettings } from './globals/SiteSettings'
+import { Home } from './globals/Home'
+import { About } from './globals/About'
+import { Donate } from './globals/Donate'
+import { TaxInfo } from './globals/TaxInfo'
+import { General } from './globals/General'
 import { googleWorkspaceStrategy } from './authStrategies/googleWorkspace'
+import { SITE_URL } from './lib/siteUrl'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -31,16 +36,23 @@ export default buildConfig({
       graphics: {
         Logo: '@/components/LoginLogo#LoginLogo',
       },
+      logout: {
+        Button: '@/components/LogoutButton#LogoutButton',
+      },
+      Nav: '@/components/AdminNav#AdminNav',
     },
   },
 
   // ── Collections (content types) ─────────────────────────
+  // Order matters for admin sidebar grouping — Events/Publications are listed
+  // first so the "Pages" group (shared with the page Globals below) registers
+  // before "Content" and "Admin".
   collections: [
-    TeamMembers,
     Events,
     Publications,
     Programs,
     Media,
+    TeamMembers,
     // Built-in Users collection for admin login.
     // Google Workspace login (via the googleWorkspaceStrategy custom strategy)
     // is the primary path; the default local email/password strategy stays
@@ -50,7 +62,7 @@ export default buildConfig({
       auth: {
         strategies: [googleWorkspaceStrategy],
       },
-      admin: { useAsTitle: 'email' },
+      admin: { useAsTitle: 'email', group: 'Admin' },
       fields: [
         { name: 'name', type: 'text', label: 'Full Name' },
       ],
@@ -58,7 +70,7 @@ export default buildConfig({
   ],
 
   // ── Globals (singleton settings) ────────────────────────
-  globals: [SiteSettings],
+  globals: [Home, About, Donate, TaxInfo, General],
 
   // ── Editor ───────────────────────────────────────────────
   editor: lexicalEditor(),
@@ -112,6 +124,12 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL,
     },
+    // Disable dev-mode schema auto-push. With it on, removing/renaming a
+    // field or global makes Payload block every request behind an
+    // interactive "drop this table? (y/N)" prompt on boot — which just hangs
+    // in a non-interactive process. Schema changes now go through explicit
+    // `payload migrate:create` / `payload migrate` instead.
+    push: false,
   }),
 
   // ── Secret key (change this in production!) ─────────────
@@ -121,7 +139,7 @@ export default buildConfig({
   cors: [
     'http://localhost:5173',   // SvelteKit dev
     'http://localhost:3000',   // SvelteKit preview
-    process.env.SITE_URL || 'https://gothamdataclinic.org',
+    SITE_URL,
   ],
 
   // ── TypeScript output ────────────────────────────────────

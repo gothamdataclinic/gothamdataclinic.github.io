@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server'
 
 import { ALLOWED_EMAIL_DOMAIN } from '@/lib/allowedEmailDomain'
+import { getRequestOrigin } from '@/lib/getRequestOrigin'
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url)
+  const { searchParams } = new URL(request.url)
+  const origin = getRequestOrigin(request)
   const code = searchParams.get('code')
   const loginErrorUrl = new URL('/admin/login', origin)
 

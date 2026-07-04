@@ -67,11 +67,11 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    'team-members': TeamMember;
     events: Event;
     publications: Publication;
     programs: Program;
     media: Media;
+    'team-members': TeamMember;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -80,11 +80,11 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     publications: PublicationsSelect<false> | PublicationsSelect<true>;
     programs: ProgramsSelect<false> | ProgramsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -96,10 +96,18 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
-    'site-settings': SiteSetting;
+    home: Home;
+    about: About;
+    donate: Donate;
+    'tax-info': TaxInfo;
+    general: General;
   };
   globalsSelect: {
-    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    home: HomeSelect<false> | HomeSelect<true>;
+    about: AboutSelect<false> | AboutSelect<true>;
+    donate: DonateSelect<false> | DonateSelect<true>;
+    'tax-info': TaxInfoSelect<false> | TaxInfoSelect<true>;
+    general: GeneralSelect<false> | GeneralSelect<true>;
   };
   locale: null;
   widgets: {
@@ -130,26 +138,26 @@ export interface UserAuthOperations {
   };
 }
 /**
- * Add, edit, or remove team members. Upload headshots and bios here.
+ * Add upcoming workshops, lectures, and community events. Toggle "Feature on Homepage" to highlight an event.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team-members".
+ * via the `definition` "events".
  */
-export interface TeamMember {
+export interface Event {
   id: number;
-  name: string;
-  credentials?: string | null;
-  role: string;
-  memberType: 'current' | 'founding';
-  photo?: (number | null) | Media;
-  bio?: string | null;
-  tags?:
-    | {
-        tag?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  order?: number | null;
+  title: string;
+  date: string;
+  endDate?: string | null;
+  location?: string | null;
+  description?: string | null;
+  registrationUrl?: string | null;
+  /**
+   * Optional link to a dedicated event website, separate from registration.
+   */
+  websiteUrl?: string | null;
+  image?: (number | null) | Media;
+  eventType?: ('Workshop' | 'Lecture' | 'Community Event' | 'Conference' | 'Webinar' | 'Other') | null;
+  featured?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -193,31 +201,7 @@ export interface Media {
   };
 }
 /**
- * Add upcoming workshops, lectures, and community events. Toggle "Feature on Homepage" to highlight an event.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "events".
- */
-export interface Event {
-  id: number;
-  title: string;
-  date: string;
-  endDate?: string | null;
-  location?: string | null;
-  description?: string | null;
-  registrationUrl?: string | null;
-  /**
-   * Optional link to a dedicated event website, separate from registration.
-   */
-  websiteUrl?: string | null;
-  image?: (number | null) | Media;
-  eventType?: ('Workshop' | 'Lecture' | 'Community Event' | 'Conference' | 'Webinar' | 'Other') | null;
-  featured?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Add peer-reviewed papers, conference proceedings, and reports. Paste the DOI or PDF link so visitors can access the full paper.
+ * Add peer-reviewed papers, conference proceedings, and reports. Paste the DOI or PDF link so visitors can access the full paper. Shown on the /press page.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "publications".
@@ -256,6 +240,30 @@ export interface Program {
   title: string;
   label?: string | null;
   description?: string | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Add, edit, or remove team members. Upload headshots and bios here.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-members".
+ */
+export interface TeamMember {
+  id: number;
+  name: string;
+  credentials?: string | null;
+  role: string;
+  memberType: 'current' | 'founding';
+  photo?: (number | null) | Media;
+  bio?: string | null;
+  tags?:
+    | {
+        tag?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   order?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -311,10 +319,6 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'team-members';
-        value: number | TeamMember;
-      } | null)
-    | ({
         relationTo: 'events';
         value: number | Event;
       } | null)
@@ -329,6 +333,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'team-members';
+        value: number | TeamMember;
       } | null)
     | ({
         relationTo: 'users';
@@ -375,27 +383,6 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team-members_select".
- */
-export interface TeamMembersSelect<T extends boolean = true> {
-  name?: T;
-  credentials?: T;
-  role?: T;
-  memberType?: T;
-  photo?: T;
-  bio?: T;
-  tags?:
-    | T
-    | {
-        tag?: T;
-        id?: T;
-      };
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -493,6 +480,27 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-members_select".
+ */
+export interface TeamMembersSelect<T extends boolean = true> {
+  name?: T;
+  credentials?: T;
+  role?: T;
+  memberType?: T;
+  photo?: T;
+  bio?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -555,48 +563,40 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Global settings for the entire website. Change the donation link, contact email, hero images, and tax information here.
+ * Content for the homepage (/).
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-settings".
+ * via the `definition` "home".
  */
-export interface SiteSetting {
+export interface Home {
   id: number;
-  /**
-   * Shown in the hero section on the homepage.
-   */
-  missionStatement?: string | null;
-  /**
-   * The pulled-quote shown on both the Homepage mission section and the About page vision section.
-   */
-  visionQuote?: string | null;
-  /**
-   * The stat blocks (e.g. "30+ / NYC High Schools Reached") shown on both the Homepage and About page.
-   */
-  orgStats?:
-    | {
-        value?: string | null;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  contactEmail?: string | null;
-  /**
-   * Used in the site footer.
-   */
-  siteLogo?: (number | null) | Media;
-  socialLinks?: {
-    bluesky?: string | null;
-    linkedin?: string | null;
-  };
   /**
    * The large headline at the top of the homepage.
    */
   heroHeadline?: string | null;
   /**
+   * Shown in the hero section on the homepage.
+   */
+  missionStatement?: string | null;
+  /**
    * The paragraph above the vision quote in the homepage mission section.
    */
   missionSectionBody?: string | null;
+  /**
+   * Full-width background image on the homepage.
+   */
+  heroImage?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Content for the About & Mission page (/about).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about".
+ */
+export interface About {
+  id: number;
   /**
    * The paragraph below the vision quote on the About page.
    */
@@ -626,6 +626,25 @@ export interface SiteSetting {
       }[]
     | null;
   /**
+   * Background image on the About & Mission page.
+   */
+  aboutHeroImage?: (number | null) | Media;
+  /**
+   * Image in the BrainWaves program box on the About page. Left blank, the box renders without an image.
+   */
+  brainwavesImage?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Content for the Donate page (/donate).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "donate".
+ */
+export interface Donate {
+  id: number;
+  /**
    * The large headline at the top of the Donate page.
    */
   donateHeroHeadline?: string | null;
@@ -652,22 +671,20 @@ export interface SiteSetting {
       }[]
     | null;
   /**
-   * Full-width background image on the homepage.
-   */
-  heroImage?: (number | null) | Media;
-  /**
    * Full-width background image on the Donate page.
    */
   donateHeroImage?: (number | null) | Media;
-  /**
-   * Background image on the About & Mission page.
-   */
-  aboutHeroImage?: (number | null) | Media;
-  /**
-   * Background image on the Team page.
-   */
-  teamHeroImage?: (number | null) | Media;
-  ein?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Content for the Tax Information page (/tax-info).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tax-info".
+ */
+export interface TaxInfo {
+  id: number;
   taxExemptStatus?: string | null;
   fiscalYear?: string | null;
   stateOfIncorporation?: string | null;
@@ -697,29 +714,69 @@ export interface SiteSetting {
   createdAt?: string | null;
 }
 /**
+ * Settings shared across multiple pages: branding, contact info, and copy that appears on more than one page.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-settings_select".
+ * via the `definition` "general".
  */
-export interface SiteSettingsSelect<T extends boolean = true> {
-  missionStatement?: T;
-  visionQuote?: T;
+export interface General {
+  id: number;
+  contactEmail?: string | null;
+  /**
+   * Used in the site header and footer.
+   */
+  siteLogo?: (number | null) | Media;
+  socialLinks?: {
+    bluesky?: string | null;
+    linkedin?: string | null;
+  };
+  /**
+   * Shown on both the Donate page and the Tax Information page.
+   */
+  ein?: string | null;
+  /**
+   * The pulled-quote shown on both the Homepage mission section and the About page vision section.
+   */
+  visionQuote?: string | null;
+  /**
+   * The stat blocks (e.g. "30+ / NYC High Schools Reached") shown on both the Homepage and About page.
+   */
   orgStats?:
-    | T
     | {
-        value?: T;
-        label?: T;
-        id?: T;
-      };
-  contactEmail?: T;
-  siteLogo?: T;
-  socialLinks?:
-    | T
-    | {
-        bluesky?: T;
-        linkedin?: T;
-      };
+        value?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Image next to the mission/vision copy on the Home and About pages. Left blank, the section renders without an image.
+   */
+  missionVisualImage?: (number | null) | Media;
+  /**
+   * Background image on the Team page.
+   */
+  teamHeroImage?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home_select".
+ */
+export interface HomeSelect<T extends boolean = true> {
   heroHeadline?: T;
+  missionStatement?: T;
   missionSectionBody?: T;
+  heroImage?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about_select".
+ */
+export interface AboutSelect<T extends boolean = true> {
   visionIntro?: T;
   missionFull?: T;
   pillars?:
@@ -736,6 +793,17 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
+  aboutHeroImage?: T;
+  brainwavesImage?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "donate_select".
+ */
+export interface DonateSelect<T extends boolean = true> {
   donateHeroHeadline?: T;
   donationUrl?: T;
   donationPlatformName?: T;
@@ -747,11 +815,16 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
-  heroImage?: T;
   donateHeroImage?: T;
-  aboutHeroImage?: T;
-  teamHeroImage?: T;
-  ein?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tax-info_select".
+ */
+export interface TaxInfoSelect<T extends boolean = true> {
   taxExemptStatus?: T;
   fiscalYear?: T;
   stateOfIncorporation?: T;
@@ -771,6 +844,34 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         answer?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "general_select".
+ */
+export interface GeneralSelect<T extends boolean = true> {
+  contactEmail?: T;
+  siteLogo?: T;
+  socialLinks?:
+    | T
+    | {
+        bluesky?: T;
+        linkedin?: T;
+      };
+  ein?: T;
+  visionQuote?: T;
+  orgStats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  missionVisualImage?: T;
+  teamHeroImage?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { PageData } from './$types'
-  import { uploadUrl, FALLBACK_IMAGES } from '$lib/cms'
+  import { uploadUrl } from '$lib/cms'
   let { data }: { data: PageData } = $props()
 
-  let heroImage = $derived(uploadUrl(data.settings?.teamHeroImage) || FALLBACK_IMAGES.missionVisual)
+  let heroImage = $derived(uploadUrl(data.settings?.teamHeroImage))
 
   const avatarColors = [
     { bg: '#1D2B4A', text: '#D9581F' },
@@ -38,7 +38,7 @@
 <svelte:head><title>Our Team | Gotham Data Clinic</title></svelte:head>
 
 <section class="page-hero">
-  <div class="hero-bg" style="background-image:url('{heroImage}');"></div>
+  <div class="hero-bg" style={heroImage ? `background-image:url('${heroImage}');` : ''}></div>
   <div class="container" style="position:relative;z-index:10;">
     <span class="section-label fade-up">Our People</span>
     <h1 class="fade-up-1">The Team Behind Gotham Data Clinic</h1>

@@ -7,6 +7,7 @@ export const Events: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'date', 'eventType', 'featured'],
     description: 'Add upcoming workshops, lectures, and community events. Toggle "Feature on Homepage" to highlight an event.',
+    group: 'Pages',
   },
   access: {
     read: () => true,

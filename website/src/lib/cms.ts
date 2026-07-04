@@ -51,8 +51,20 @@ export async function getPrograms() {
 }
 
 // ── Site Settings ─────────────────────────────────────────────
+// The CMS splits page content across several Globals instead of one big
+// SiteSettings global, matching the site's routes (see cms/src/globals/).
+// This merges them into a single flat object so every page component can
+// keep reading `settings.fieldName` regardless of which Global it lives in.
 export async function getSiteSettings() {
-  return fetchAPI('/globals/site-settings')
+  const [general, home, about, donate, taxInfo] = await Promise.all([
+    fetchAPI('/globals/general'),
+    fetchAPI('/globals/home'),
+    fetchAPI('/globals/about'),
+    fetchAPI('/globals/donate'),
+    fetchAPI('/globals/tax-info'),
+  ])
+  if (!general && !home && !about && !donate && !taxInfo) return null
+  return { ...general, ...home, ...about, ...donate, ...taxInfo }
 }
 
 // ── Media URL helper ─────────────────────────────────────────
@@ -68,16 +80,4 @@ export function uploadUrl(media: { url?: string | null } | string | null | undef
   if (!media) return null
   if (typeof media === 'string') return mediaUrl(media)
   return media.url ? mediaUrl(media.url) : null
-}
-
-// Decorative image fallbacks used before an admin sets the corresponding
-// SiteSettings upload field — real assets already in the Media library,
-// replacing the redesign template's placeholder `/manus-storage/...` paths
-// (which never resolved to anything).
-const SUPABASE_MEDIA_BASE = 'https://hfzcajwujpczyzlfsytx.supabase.co/storage/v1/object/public/media'
-export const FALLBACK_IMAGES = {
-  heroBg: `${SUPABASE_MEDIA_BASE}/main.jpeg`,
-  missionVisual: `${SUPABASE_MEDIA_BASE}/app_home.png`,
-  brainwaves: `${SUPABASE_MEDIA_BASE}/brainwaves_app_full_screen.png`,
-  programsNetwork: `${SUPABASE_MEDIA_BASE}/brainwaves_app.png`,
 }

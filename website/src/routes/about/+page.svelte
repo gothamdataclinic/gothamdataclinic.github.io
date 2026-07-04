@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types'
-  import { uploadUrl, FALLBACK_IMAGES } from '$lib/cms'
+  import { uploadUrl } from '$lib/cms'
 
   let { data }: { data: PageData } = $props()
   let settings = $derived(data.settings ?? {})
@@ -22,20 +22,22 @@
     { value: '501(c)(3)', label: 'Nonprofit Status' },
   ]
 
-  let visionQuote = $derived(settings.visionQuote || 'Our vision is to inform, prepare, and train the next generation of scientists and technologists and the broader public in computational and data sciences for a more fair and responsible future.')
-  let visionIntro = $derived(settings.visionIntro || "We believe that access to computational education should not be determined by zip code or socioeconomic status. By bringing world-class data science curriculum to NYC's public schools and communities, we are helping to close the opportunity gap in STEM.")
+  let visionQuote = $derived(settings.visionQuote || 'We wanted to find a home for this neuroscience education platform and its curriculum after the grant period ended so we established this nonprofit to be the stewards of the program.')
+  let visionIntro = $derived(settings.visionIntro || "We believe that access to computing education should not be determined by zip code or socioeconomic status. By bringing world-class computing and data science curriculum to NYC's public schools and beyond, we are helping to close the opportunity gap in STEM.")
   let pillars = $derived(settings.pillars?.length ? settings.pillars : fallbackPillars)
   let historyTimeline = $derived(settings.historyTimeline?.length ? settings.historyTimeline : fallbackTimeline)
   let stats = $derived(settings.orgStats?.length ? settings.orgStats : fallbackStats)
-  let heroImage = $derived(uploadUrl(settings.aboutHeroImage) || FALLBACK_IMAGES.programsNetwork)
+  let heroImage = $derived(uploadUrl(settings.aboutHeroImage))
   let missionFull = $derived(settings.missionFull)
+  let missionVisualImage = $derived(uploadUrl(settings.missionVisualImage))
+  let brainwavesImage = $derived(uploadUrl(settings.brainwavesImage))
 </script>
 
 <svelte:head><title>About & Mission | Gotham Data Clinic</title></svelte:head>
 
 <!-- PAGE HERO -->
 <section class="page-hero">
-  <div class="hero-bg" style="background-image:url('{heroImage}');"></div>
+  <div class="hero-bg" style={heroImage ? `background-image:url('${heroImage}');` : ''}></div>
   <div class="container" style="position:relative;z-index:10;">
     <span class="section-label fade-up">About Us</span>
     <h1 class="fade-up-1">About &amp; Mission</h1>
@@ -48,13 +50,15 @@
   <div class="container two-col">
     <div>
       <span class="section-label">Our Vision</span>
-      <h2>A fair and responsible future through data science</h2>
+      <h2>Building a fair and responsible future in science and technology</h2>
       <blockquote class="ember-border" style="margin-bottom:1.5rem;">
         <p class="body" style="font-style:italic;">"{visionQuote}"</p>
       </blockquote>
       <p class="body">{visionIntro}</p>
     </div>
-    <img src={FALLBACK_IMAGES.missionVisual} alt="Data science visualization" class="sec-img" style="box-shadow:-8px 8px 0 #D9581F;" />
+    {#if missionVisualImage}
+      <img src={missionVisualImage} alt="Data science visualization" class="sec-img" style="box-shadow:-8px 8px 0 #D9581F;" />
+    {/if}
   </div>
 </section>
 
@@ -110,7 +114,9 @@
       <div class="brainwaves-box">
         <span class="section-label">Flagship Program</span>
         <h3 style="color:white;">BrainWaves</h3>
-        <img src={FALLBACK_IMAGES.brainwaves} alt="EEG visualization" style="width:100%;height:10rem;object-fit:cover;margin-bottom:1rem;opacity:.8;" />
+        {#if brainwavesImage}
+          <img src={brainwavesImage} alt="EEG visualization" style="width:100%;height:10rem;object-fit:cover;margin-bottom:1rem;opacity:.8;" />
+        {/if}
         <p class="sm-body" style="color:rgba(255,255,255,.65);margin-bottom:1.5rem;">A hands-on neuroscience curriculum that provided experiential learning to thirty different high schools across New York City.</p>
         <a href="https://wp.nyu.edu/brainwaves" target="_blank" rel="noopener" class="tlink-light">Learn About BrainWaves →</a>
       </div>

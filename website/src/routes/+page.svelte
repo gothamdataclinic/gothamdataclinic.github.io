@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types'
-  import { uploadUrl, FALLBACK_IMAGES } from '$lib/cms'
+  import { uploadUrl } from '$lib/cms'
 
   let { data }: { data: PageData } = $props()
 
@@ -22,17 +22,18 @@
   let stats = $derived(settings.orgStats?.length ? settings.orgStats : fallbackStats)
   let featuredEvent = $derived(data.featuredEvent)
 
-  let heroHeadline = $derived(settings.heroHeadline || "Training Tomorrow's Data Scientists in the City That Never Stops")
+  let heroHeadline = $derived(settings.heroHeadline || 'Training the next-generation of scientists and technologists')
   let heroSubhead = $derived(settings.missionStatement || 'Gotham Data Clinic is a New York City-based nonprofit whose mission is to train the next generation of scientists and technologists in computing and data science — and to engage the public in these vital conversations.')
-  let heroImage = $derived(uploadUrl(settings.heroImage) || FALLBACK_IMAGES.heroBg)
+  let heroImage = $derived(uploadUrl(settings.heroImage))
   let missionSectionBody = $derived(settings.missionSectionBody || 'Our vision is to inform, prepare, and train the next generation of scientists and technologists — and the broader public — in computational and data sciences for a more fair and responsible future.')
-  let visionQuote = $derived(settings.visionQuote || 'We wanted to find a home for this research platform and its curriculum after the grant period ended — so we established this nonprofit to be the stewards of the program.')
+  let visionQuote = $derived(settings.visionQuote || 'We wanted to find a home for this neuroscience education platform and its curriculum after the grant period ended so we established this nonprofit to be the stewards of the program.')
+  let missionVisualImage = $derived(uploadUrl(settings.missionVisualImage))
 </script>
 
 <svelte:head><title>Gotham Data Clinic</title></svelte:head>
 
 <!-- HERO -->
-<section class="hero" style="background-image:url('{heroImage}');">
+<section class="hero" style={heroImage ? `background-image:url('${heroImage}');` : ''}>
   <div class="hero-overlay"></div>
   <div class="container hero-inner">
     <div class="hero-card">
@@ -71,7 +72,9 @@
       </blockquote>
       <a href="/about" class="tlink">Read Our Full Story →</a>
     </div>
-    <img src={FALLBACK_IMAGES.missionVisual} alt="Data science visualization" class="sec-img" style="box-shadow: 8px 8px 0 #D9581F;" />
+    {#if missionVisualImage}
+      <img src={missionVisualImage} alt="Data science visualization" class="sec-img" style="box-shadow: 8px 8px 0 #D9581F;" />
+    {/if}
   </div>
 </section>
 
@@ -101,10 +104,12 @@
       <div><span class="section-label">Events &amp; Lectures</span><h2 style="margin-bottom:0;">Upcoming Events</h2></div>
       <a href="/events" class="tlink">View All Events →</a>
     </div>
-    <div class="two-col">
+    <div class="events-single">
       {#if featuredEvent}
         <div class="event-card card-hover">
-          <img src={uploadUrl(featuredEvent.image) || FALLBACK_IMAGES.brainwaves} alt="Event" class="ev-img" />
+          {#if uploadUrl(featuredEvent.image)}
+            <img src={uploadUrl(featuredEvent.image)} alt="Event" class="ev-img" />
+          {/if}
           <div class="ev-body">
             <span class="section-label">Featured Event</span>
             <h3 style="color:white;">{featuredEvent.title}</h3>
@@ -123,7 +128,6 @@
         </div>
       {:else}
         <div class="event-card card-hover">
-          <img src={FALLBACK_IMAGES.brainwaves} alt="Event" class="ev-img" />
           <div class="ev-body">
             <span class="section-label">No Upcoming Events</span>
             <h3 style="color:white;">Check back soon</h3>
@@ -131,14 +135,6 @@
           </div>
         </div>
       {/if}
-      <div class="research-panel">
-        <img src={FALLBACK_IMAGES.programsNetwork} alt="Research" class="rp-img" />
-        <div class="rp-overlay">
-          <span class="section-label">Our Research</span>
-          <h3 style="color:white;">Data Science for a Fair Future</h3>
-          <p style="color:rgba(255,255,255,0.65);font-size:0.875rem;">We publish our work through scholarly and public engagements to advance responsible computing education.</p>
-        </div>
-      </div>
     </div>
   </div>
 </section>
@@ -192,11 +188,9 @@ h3 { font-size:1.125rem; font-weight:700; color:#1D2B4A; margin-bottom:.75rem; }
 .sm-body { font-size:.875rem; line-height:1.6; color:#3D4A73; }
 .sec-img { width:100%; height:22rem; object-fit:cover; }
 .prog-card { padding:1.5rem; border:1px solid #DDE2EE; background:white; }
+.events-single { max-width:40rem; }
 .event-card { background:#1D2B4A; overflow:hidden; }
 .ev-img { width:100%; height:13rem; object-fit:cover; opacity:.5; }
 .ev-body { padding:2rem; }
-.research-panel { position:relative; overflow:hidden; min-height:16rem; }
-.rp-img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
-.rp-overlay { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:2rem; background:linear-gradient(to top,rgba(19,27,46,.92) 0%,rgba(19,27,46,.4) 60%,transparent 100%); }
 .donate-cta { background:#1D2B4A; padding:5rem 0; }
 </style>

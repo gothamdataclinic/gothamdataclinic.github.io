@@ -7,6 +7,7 @@ export const TeamMembers: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'role', 'memberType'],
     description: 'Add, edit, or remove team members. Upload headshots and bios here.',
+    group: 'Admin',
   },
   access: {
     read: () => true, // Public read for the website
