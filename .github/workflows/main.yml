@@ -4,17 +4,25 @@ on:
   push:
     branches: 'main'
 
+# Queue deployments instead of racing them — GitHub's Pages environment can
+# only have one deployment in flight at a time, and back-to-back pushes were
+# causing "Deployment failed, try again later." when a new deploy started
+# before the previous one had finished settling.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build_site:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
           cache-dependency-path: website/package-lock.json
 
@@ -29,7 +37,7 @@ jobs:
         run: npm run build
 
       - name: Upload Artifacts
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: 'website/build/'
 
@@ -45,7 +53,35 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
+    outputs:
+      result: ${{ steps.deployment.outcome }}
+
     steps:
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v4
+        # Don't fail the job outright — deploy-retry below gets one shot at
+        # it first, since this has so far always been a transient error.
+        continue-on-error: true
+        uses: actions/deploy-pages@v5
+
+  # GitHub Pages deployments have occasionally failed with a generic
+  # "Deployment failed, try again later." even though the build/artifact
+  # were fine — resolved every time so far by simply retrying. Automate
+  # that one retry instead of needing a manual `gh run rerun`.
+  deploy-retry:
+    needs: deploy
+    if: needs.deploy.outputs.result == 'failure'
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy (retry)
+        id: deployment
+        uses: actions/deploy-pages@v5
