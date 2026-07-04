@@ -7,7 +7,12 @@
   let years = $derived([...new Set(pubs.map((p: any) => p.year))].sort((a: any, b: any) => b - a))
 </script>
 
-<svelte:head><title>Press | Gotham Data Clinic</title></svelte:head>
+<svelte:head>
+  <title>Press | Gotham Data Clinic</title>
+  <meta property="og:title" content="Press | Gotham Data Clinic" />
+  <meta property="og:url" content="https://gothamdataclinic.org/press" />
+  <meta name="twitter:title" content="Press | Gotham Data Clinic" />
+</svelte:head>
 
 <section class="page-hero">
   <div class="container">

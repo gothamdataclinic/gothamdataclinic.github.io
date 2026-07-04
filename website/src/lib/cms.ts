@@ -38,6 +38,12 @@ export async function getUpcomingEvents() {
   return data?.docs ?? []
 }
 
+export async function getMostRecentPastEvent() {
+  const now = new Date().toISOString()
+  const data = await fetchAPI(`/events?limit=1&sort=-date&where[date][less_than_equal]=${now}`)
+  return data?.docs?.[0] ?? null
+}
+
 // ── Publications ─────────────────────────────────────────────
 export async function getPublications() {
   const data = await fetchAPI('/publications?limit=100&sort=-year')

@@ -40,7 +40,12 @@
   }
 </script>
 
-<svelte:head><title>Tax Information | Gotham Data Clinic</title></svelte:head>
+<svelte:head>
+  <title>Tax Information | Gotham Data Clinic</title>
+  <meta property="og:title" content="Tax Information | Gotham Data Clinic" />
+  <meta property="og:url" content="https://gothamdataclinic.org/tax-info" />
+  <meta name="twitter:title" content="Tax Information | Gotham Data Clinic" />
+</svelte:head>
 
 <section class="page-hero">
   <div class="container">

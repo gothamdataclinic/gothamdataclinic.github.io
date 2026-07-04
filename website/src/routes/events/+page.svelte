@@ -14,7 +14,12 @@
   }
 </script>
 
-<svelte:head><title>Events | Gotham Data Clinic</title></svelte:head>
+<svelte:head>
+  <title>Events | Gotham Data Clinic</title>
+  <meta property="og:title" content="Events | Gotham Data Clinic" />
+  <meta property="og:url" content="https://gothamdataclinic.org/events" />
+  <meta name="twitter:title" content="Events | Gotham Data Clinic" />
+</svelte:head>
 
 <section class="page-hero">
   <div class="container">

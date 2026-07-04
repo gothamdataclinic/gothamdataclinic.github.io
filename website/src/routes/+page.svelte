@@ -21,6 +21,7 @@
   let programs = $derived(data.programs?.length ? data.programs : fallbackPrograms)
   let stats = $derived(settings.orgStats?.length ? settings.orgStats : fallbackStats)
   let featuredEvent = $derived(data.featuredEvent)
+  let isPastEvent = $derived(data.isPastEvent)
 
   let heroHeadline = $derived(settings.heroHeadline || 'Training the next-generation of scientists and technologists')
   let heroSubhead = $derived(settings.missionStatement || 'Gotham Data Clinic is a New York City-based nonprofit whose mission is to train the next generation of scientists and technologists in computing and data science — and to engage the public in these vital conversations.')
@@ -30,7 +31,12 @@
   let missionVisualImage = $derived(uploadUrl(settings.missionVisualImage))
 </script>
 
-<svelte:head><title>Gotham Data Clinic</title></svelte:head>
+<svelte:head>
+  <title>Gotham Data Clinic</title>
+  <meta property="og:title" content="Gotham Data Clinic" />
+  <meta property="og:url" content="https://gothamdataclinic.org/" />
+  <meta name="twitter:title" content="Gotham Data Clinic" />
+</svelte:head>
 
 <!-- HERO -->
 <section class="hero" style={heroImage ? `background-image:url('${heroImage}');` : ''}>
@@ -101,7 +107,7 @@
 <section class="sec-white">
   <div class="container">
     <div class="sec-hdr">
-      <div><span class="section-label">Events &amp; Lectures</span><h2 style="margin-bottom:0;">Upcoming Events</h2></div>
+      <div><span class="section-label">Events &amp; Lectures</span><h2 style="margin-bottom:0;">Our Events</h2></div>
       <a href="/events" class="tlink">View All Events →</a>
     </div>
     <div class="events-single">
@@ -111,13 +117,13 @@
             <img src={uploadUrl(featuredEvent.image)} alt="Event" class="ev-img" />
           {/if}
           <div class="ev-body">
-            <span class="section-label">Featured Event</span>
+            <span class="section-label">{isPastEvent ? 'Past Event' : 'Featured Event'}</span>
             <h3 style="color:white;">{featuredEvent.title}</h3>
             {#if featuredEvent.description}
               <p style="color:rgba(255,255,255,0.65);font-size:0.875rem;line-height:1.6;margin-bottom:1.5rem;">{featuredEvent.description}</p>
             {/if}
             <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
-              {#if featuredEvent.registrationUrl}
+              {#if featuredEvent.registrationUrl && !isPastEvent}
                 <a href={featuredEvent.registrationUrl} target="_blank" rel="noopener" class="btn-ember">Register Now →</a>
               {/if}
               {#if featuredEvent.websiteUrl}
@@ -129,7 +135,7 @@
       {:else}
         <div class="event-card card-hover">
           <div class="ev-body">
-            <span class="section-label">No Upcoming Events</span>
+            <span class="section-label">No Events Yet</span>
             <h3 style="color:white;">Check back soon</h3>
             <p style="color:rgba(255,255,255,0.65);font-size:0.875rem;line-height:1.6;">New events are added regularly — add one in the CMS to feature it here.</p>
           </div>

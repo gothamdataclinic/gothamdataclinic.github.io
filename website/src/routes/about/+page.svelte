@@ -33,7 +33,12 @@
   let brainwavesImage = $derived(uploadUrl(settings.brainwavesImage))
 </script>
 
-<svelte:head><title>About & Mission | Gotham Data Clinic</title></svelte:head>
+<svelte:head>
+  <title>About & Mission | Gotham Data Clinic</title>
+  <meta property="og:title" content="About & Mission | Gotham Data Clinic" />
+  <meta property="og:url" content="https://gothamdataclinic.org/about" />
+  <meta name="twitter:title" content="About & Mission | Gotham Data Clinic" />
+</svelte:head>
 
 <!-- PAGE HERO -->
 <section class="page-hero">

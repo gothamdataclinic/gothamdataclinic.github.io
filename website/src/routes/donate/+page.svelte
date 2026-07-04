@@ -23,7 +23,12 @@
   let heroHeadline = $derived(data.settings?.donateHeroHeadline || 'Invest in the Next Generation of Scientists and Technologists')
 </script>
 
-<svelte:head><title>Donate | Gotham Data Clinic</title></svelte:head>
+<svelte:head>
+  <title>Donate | Gotham Data Clinic</title>
+  <meta property="og:title" content="Donate | Gotham Data Clinic" />
+  <meta property="og:url" content="https://gothamdataclinic.org/donate" />
+  <meta name="twitter:title" content="Donate | Gotham Data Clinic" />
+</svelte:head>
 
 <section class="page-hero" style={heroImage ? `background-image: url('${heroImage}');` : ''}>
   <div class="hero-overlay"></div>

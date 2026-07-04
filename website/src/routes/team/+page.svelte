@@ -17,6 +17,29 @@
     return name.split(' ').filter(w => /^[A-Z]/.test(w)).slice(0,2).map(w => w[0]).join('')
   }
 
+  function colorFor(name: string) {
+    const hash = name.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+    return avatarColors[hash % avatarColors.length]
+  }
+
+  let selectedMember: any = $state(null)
+
+  function openMember(member: any) {
+    selectedMember = member
+  }
+
+  function closeMember() {
+    selectedMember = null
+  }
+
+  $effect(() => {
+    document.body.style.overflow = selectedMember ? 'hidden' : ''
+  })
+
+  function onKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape') closeMember()
+  }
+
   let current = $derived((data.team ?? []).filter((m: any) => m.memberType === 'current'))
   let founding = $derived((data.team ?? []).filter((m: any) => m.memberType === 'founding'))
 
@@ -35,7 +58,14 @@
   let displayFounding = $derived(founding.length ? founding : staticFounding)
 </script>
 
-<svelte:head><title>Our Team | Gotham Data Clinic</title></svelte:head>
+<svelte:head>
+  <title>Our Team | Gotham Data Clinic</title>
+  <meta property="og:title" content="Our Team | Gotham Data Clinic" />
+  <meta property="og:url" content="https://gothamdataclinic.org/team" />
+  <meta name="twitter:title" content="Our Team | Gotham Data Clinic" />
+</svelte:head>
+
+<svelte:window onkeydown={onKeydown} />
 
 <section class="page-hero">
   <div class="hero-bg" style={heroImage ? `background-image:url('${heroImage}');` : ''}></div>
@@ -52,7 +82,7 @@
     <h2>Team Members</h2>
     <div class="team-grid">
       {#each displayCurrent as member, i}
-        <div class="member-card card-hover">
+        <button type="button" class="member-card card-hover" onclick={() => openMember(member)}>
           {#if uploadUrl(member.photo)}
             <img class="avatar" src={uploadUrl(member.photo)} alt={member.name} />
           {:else}
@@ -70,7 +100,7 @@
               {/each}
             </div>
           </div>
-        </div>
+        </button>
       {/each}
     </div>
   </div>
@@ -82,7 +112,7 @@
     <h2>The Founders</h2>
     <div class="team-grid">
       {#each displayFounding as member, i}
-        <div class="member-card card-hover">
+        <button type="button" class="member-card card-hover" onclick={() => openMember(member)}>
           {#if uploadUrl(member.photo)}
             <img class="avatar" src={uploadUrl(member.photo)} alt={member.name} />
           {:else}
@@ -100,7 +130,7 @@
               {/each}
             </div>
           </div>
-        </div>
+        </button>
       {/each}
     </div>
   </div>
@@ -116,6 +146,34 @@
   </div>
 </section>
 
+{#if selectedMember}
+  <div class="modal-overlay">
+    <button type="button" class="modal-backdrop" onclick={closeMember} aria-label="Close"></button>
+    <div class="modal">
+      <button type="button" class="modal-close" onclick={closeMember} aria-label="Close">&times;</button>
+      <div class="modal-photo-panel">
+        {#if uploadUrl(selectedMember.photo)}
+          <img class="modal-photo" src={uploadUrl(selectedMember.photo)} alt={selectedMember.name} />
+        {:else}
+          <div class="modal-photo modal-photo-fallback" style="background:{colorFor(selectedMember.name).bg}; color:{colorFor(selectedMember.name).text};">
+            {initials(selectedMember.name)}
+          </div>
+        {/if}
+      </div>
+      <div class="modal-content">
+        <span class="section-label">{selectedMember.role}</span>
+        <h3>{selectedMember.name}</h3>
+        <p class="sm-body">{selectedMember.bio}</p>
+        <div class="tags">
+          {#each (selectedMember.tags ?? []) as tag}
+            <span class="tag">{typeof tag === 'string' ? tag : tag.tag}</span>
+          {/each}
+        </div>
+      </div>
+    </div>
+  </div>
+{/if}
+
 <style>
 .page-hero{position:relative;padding:10rem 0 5rem;overflow:hidden;background:#1D2B4A;}
 .hero-bg{position:absolute;inset:0;opacity:.15;background-size:cover;background-position:center;}
@@ -129,7 +187,7 @@ h3{font-size:1.125rem;font-weight:700;color:#1D2B4A;margin-bottom:.75rem;}
 .team-grid{display:grid;gap:2rem;}
 @media(min-width:640px){.team-grid{grid-template-columns:repeat(2,1fr);}}
 @media(min-width:1024px){.team-grid{grid-template-columns:repeat(3,1fr);}}
-.member-card{position:relative;background:#1D2B4A;overflow:hidden;min-height:18rem;}
+.member-card{position:relative;background:#1D2B4A;overflow:hidden;min-height:18rem;display:block;width:100%;border:none;padding:0;margin:0;font:inherit;text-align:left;cursor:pointer;color:inherit;}
 .avatar{position:absolute;inset:0 0 0 auto;width:55%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:800;letter-spacing:-.02em;object-fit:cover;}
 img.avatar{opacity:.55;}
 .member-card::before{content:'';position:absolute;inset:0;background:linear-gradient(to right, #1D2B4A 35%, rgba(29,43,74,.65) 55%, rgba(29,43,74,0) 100%);z-index:1;}
@@ -143,4 +201,19 @@ img.avatar{opacity:.55;}
 @media(min-width:640px){.cta-row{flex-direction:row;align-items:center;justify-content:space-between;}}
 .btn-navy{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 2rem;background:#1D2B4A;color:white;font-size:.8125rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;transition:background .2s;}
 .btn-navy:hover{background:#131B2E;}
+
+.modal-overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+.modal-backdrop{position:absolute;inset:0;width:100%;height:100%;background:rgba(19,27,46,.72);border:none;padding:0;margin:0;cursor:pointer;z-index:0;}
+.modal{background:#1D2B4A;max-width:44rem;width:100%;max-height:88vh;overflow-y:auto;position:relative;z-index:1;}
+@media(min-width:640px){.modal{display:grid;grid-template-columns:60% 40%;max-height:80vh;}}
+.modal-content{order:1;}
+.modal-photo-panel{order:2;}
+.modal-close{position:absolute;top:1rem;right:1rem;z-index:5;width:2.25rem;height:2.25rem;border-radius:50%;background:rgba(255,255,255,.12);color:white;border:none;font-size:1.125rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:rgba(255,255,255,.22);}
+.modal-photo-panel{position:relative;min-height:14rem;}
+.modal-photo{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:800;letter-spacing:-.02em;}
+.modal-photo-panel::after{content:'';position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:linear-gradient(to left, rgba(29,43,74,0) 55%, rgba(29,43,74,.5) 78%, #1D2B4A 100%);-webkit-mask-image:linear-gradient(to left, transparent 55%, black 100%);mask-image:linear-gradient(to left, transparent 55%, black 100%);}
+.modal-content{padding:2rem;position:relative;z-index:2;}
+.modal-content h3{color:white;font-size:1.5rem;margin:.5rem 0 .25rem;}
+.modal-content .sm-body{color:rgba(255,255,255,.8);font-size:.9375rem;line-height:1.7;}
 </style>
