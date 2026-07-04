@@ -12,7 +12,10 @@ export default defineConfig({
 				runes: ({ filename }) => filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
 			adapter: adapter({
-				fallback: 'index.html'
+				// GitHub Pages serves 404.html for any unmatched path — that's how
+				// SPA client-side routing works there. 'index.html' (the default
+				// most hosts expect) won't be picked up at all on GH Pages.
+				fallback: '404.html'
 			})
 		})
 	]
