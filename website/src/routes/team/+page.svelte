@@ -83,8 +83,8 @@
     <div class="team-grid">
       {#each displayCurrent as member, i}
         <button type="button" class="member-card card-hover" onclick={() => openMember(member)}>
-          {#if uploadUrl(member.photo)}
-            <img class="avatar" src={uploadUrl(member.photo)} alt={member.name} />
+          {#if uploadUrl(member.photo, 'thumbnail')}
+            <img class="avatar" src={uploadUrl(member.photo, 'thumbnail')} alt={member.name} loading="lazy" />
           {:else}
             <div class="avatar" style="background:{avatarColors[i % avatarColors.length].bg}; color:{avatarColors[i % avatarColors.length].text};">
               {initials(member.name)}
@@ -113,8 +113,8 @@
     <div class="team-grid">
       {#each displayFounding as member, i}
         <button type="button" class="member-card card-hover" onclick={() => openMember(member)}>
-          {#if uploadUrl(member.photo)}
-            <img class="avatar" src={uploadUrl(member.photo)} alt={member.name} />
+          {#if uploadUrl(member.photo, 'thumbnail')}
+            <img class="avatar" src={uploadUrl(member.photo, 'thumbnail')} alt={member.name} loading="lazy" />
           {:else}
             <div class="avatar" style="background:{avatarColors[(i+2) % avatarColors.length].bg}; color:{avatarColors[(i+2) % avatarColors.length].text};">
               {initials(member.name)}
@@ -152,8 +152,8 @@
     <div class="modal">
       <button type="button" class="modal-close" onclick={closeMember} aria-label="Close">&times;</button>
       <div class="modal-photo-panel">
-        {#if uploadUrl(selectedMember.photo)}
-          <img class="modal-photo" src={uploadUrl(selectedMember.photo)} alt={selectedMember.name} />
+        {#if uploadUrl(selectedMember.photo, 'card')}
+          <img class="modal-photo" src={uploadUrl(selectedMember.photo, 'card')} alt={selectedMember.name} loading="lazy" />
         {:else}
           <div class="modal-photo modal-photo-fallback" style="background:{colorFor(selectedMember.name).bg}; color:{colorFor(selectedMember.name).text};">
             {initials(selectedMember.name)}

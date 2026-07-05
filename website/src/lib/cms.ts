@@ -81,9 +81,14 @@ function mediaUrl(filename: string | null | undefined): string | null {
 }
 
 // Populated upload-relation fields (e.g. settings.heroImage) come back from
-// Payload as an object with a `url`, not a bare filename.
-export function uploadUrl(media: { url?: string | null } | string | null | undefined): string | null {
+// Payload as an object with a `url`, not a bare filename. Pass `size` to use
+// one of Media's generated image sizes (see cms/src/collections/Media.ts)
+// instead of the full original — important for things like headshots, where
+// the original upload can be several MB but only renders as a small avatar.
+type UploadMedia = { url?: string | null; sizes?: Record<string, { url?: string | null } | null | undefined> }
+export function uploadUrl(media: UploadMedia | string | null | undefined, size?: 'thumbnail' | 'card'): string | null {
   if (!media) return null
   if (typeof media === 'string') return mediaUrl(media)
+  if (size && media.sizes?.[size]?.url) return mediaUrl(media.sizes[size]!.url)
   return media.url ? mediaUrl(media.url) : null
 }

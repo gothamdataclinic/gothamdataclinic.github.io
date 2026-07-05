@@ -26,7 +26,7 @@
       <div class="brand-col">
         <div class="logo-row">
           {#if logoUrl}
-            <img src={logoUrl} alt="GDC" style="height: 36px; filter: brightness(0) invert(1);" />
+            <img src={logoUrl} alt="GDC" style="height: 36px; filter: brightness(0) invert(1);" loading="lazy" />
           {/if}
           <span style="font-weight: 700; font-size: 0.875rem; color: white;">Gotham Data Clinic</span>
         </div>

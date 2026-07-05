@@ -79,7 +79,7 @@
       <a href="/about" class="tlink">Read Our Full Story →</a>
     </div>
     {#if missionVisualImage}
-      <img src={missionVisualImage} alt="Data science visualization" class="sec-img" style="box-shadow: 8px 8px 0 #D9581F;" />
+      <img src={missionVisualImage} alt="Data science visualization" class="sec-img" style="box-shadow: 8px 8px 0 #D9581F;" loading="lazy" />
     {/if}
   </div>
 </section>
@@ -113,8 +113,8 @@
     <div class="events-single">
       {#if featuredEvent}
         <div class="event-card card-hover">
-          {#if uploadUrl(featuredEvent.image)}
-            <img src={uploadUrl(featuredEvent.image)} alt="Event" class="ev-img" />
+          {#if uploadUrl(featuredEvent.image, 'card')}
+            <img src={uploadUrl(featuredEvent.image, 'card')} alt="Event" class="ev-img" loading="lazy" />
           {/if}
           <div class="ev-body">
             <span class="section-label">{isPastEvent ? 'Past Event' : 'Featured Event'}</span>

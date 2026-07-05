@@ -62,7 +62,7 @@
       <p class="body">{visionIntro}</p>
     </div>
     {#if missionVisualImage}
-      <img src={missionVisualImage} alt="Data science visualization" class="sec-img" style="box-shadow:-8px 8px 0 #D9581F;" />
+      <img src={missionVisualImage} alt="Data science visualization" class="sec-img" style="box-shadow:-8px 8px 0 #D9581F;" loading="lazy" />
     {/if}
   </div>
 </section>
@@ -120,7 +120,7 @@
         <span class="section-label">Flagship Program</span>
         <h3 style="color:white;">BrainWaves</h3>
         {#if brainwavesImage}
-          <img src={brainwavesImage} alt="EEG visualization" style="width:100%;height:10rem;object-fit:cover;margin-bottom:1rem;opacity:.8;" />
+          <img src={brainwavesImage} alt="EEG visualization" style="width:100%;height:10rem;object-fit:cover;margin-bottom:1rem;opacity:.8;" loading="lazy" />
         {/if}
         <p class="sm-body" style="color:rgba(255,255,255,.65);margin-bottom:1.5rem;">A hands-on neuroscience curriculum that provided experiential learning to thirty different high schools across New York City.</p>
         <a href="https://wp.nyu.edu/brainwaves" target="_blank" rel="noopener" class="tlink-light">Learn About BrainWaves →</a>
