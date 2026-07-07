@@ -58,6 +58,16 @@ export const TeamMembers: CollectionConfig = {
       hasMany: true,
     },
     {
+      name: 'linkedinUrl',
+      label: 'LinkedIn URL',
+      type: 'text',
+    },
+    {
+      name: 'personalSiteUrl',
+      label: 'Personal Website URL',
+      type: 'text',
+    },
+    {
       name: 'order',
       label: 'Display Order (lower = first)',
       type: 'number',

@@ -2,6 +2,7 @@ import * as migration_20260703_194117 from './20260703_194117';
 import * as migration_20260704_010000_split_site_settings_into_page_globals from './20260704_010000_split_site_settings_into_page_globals';
 import * as migration_20260704_020000_team_members_tags_to_hasmany_text from './20260704_020000_team_members_tags_to_hasmany_text';
 import * as migration_20260704_030000_publications_authors_to_hasmany_text from './20260704_030000_publications_authors_to_hasmany_text';
+import * as migration_20260707_010000_add_team_member_links from './20260707_010000_add_team_member_links';
 
 export const migrations = [
   {
@@ -23,5 +24,10 @@ export const migrations = [
     up: migration_20260704_030000_publications_authors_to_hasmany_text.up,
     down: migration_20260704_030000_publications_authors_to_hasmany_text.down,
     name: '20260704_030000_publications_authors_to_hasmany_text',
+  },
+  {
+    up: migration_20260707_010000_add_team_member_links.up,
+    down: migration_20260707_010000_add_team_member_links.down,
+    name: '20260707_010000_add_team_member_links',
   },
 ];

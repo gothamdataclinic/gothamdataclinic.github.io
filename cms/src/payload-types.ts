@@ -254,6 +254,8 @@ export interface TeamMember {
   photo?: (number | null) | Media;
   bio?: string | null;
   tags?: string[] | null;
+  linkedinUrl?: string | null;
+  personalSiteUrl?: string | null;
   order?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -475,6 +477,8 @@ export interface TeamMembersSelect<T extends boolean = true> {
   photo?: T;
   bio?: T;
   tags?: T;
+  linkedinUrl?: T;
+  personalSiteUrl?: T;
   order?: T;
   updatedAt?: T;
   createdAt?: T;

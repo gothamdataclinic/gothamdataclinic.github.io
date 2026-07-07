@@ -169,6 +169,16 @@
             <span class="tag">{typeof tag === 'string' ? tag : tag.tag}</span>
           {/each}
         </div>
+        {#if selectedMember.linkedinUrl || selectedMember.personalSiteUrl}
+          <div class="modal-links">
+            {#if selectedMember.linkedinUrl}
+              <a href={selectedMember.linkedinUrl} target="_blank" rel="noopener" class="tlink">LinkedIn →</a>
+            {/if}
+            {#if selectedMember.personalSiteUrl}
+              <a href={selectedMember.personalSiteUrl} target="_blank" rel="noopener" class="tlink">Personal Site →</a>
+            {/if}
+          </div>
+        {/if}
       </div>
     </div>
   </div>
@@ -216,4 +226,6 @@ img.avatar{opacity:.55;}
 .modal-content{padding:2rem;position:relative;z-index:2;}
 .modal-content h3{color:white;font-size:1.5rem;margin:.5rem 0 .25rem;}
 .modal-content .sm-body{color:rgba(255,255,255,.8);font-size:.9375rem;line-height:1.7;}
+.modal-links{display:flex;flex-wrap:wrap;gap:1.25rem;margin-top:1.25rem;}
+.tlink{font-size:.8125rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#D9581F;}
 </style>
