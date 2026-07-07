@@ -52,6 +52,9 @@
       </div>
     </div>
   </div>
+  {#if heroImage}
+    <a href="https://unsplash.com/photos/landscape-photo-of-new-york-empire-state-building-5omwAMDxmkU" target="_blank" rel="noopener" class="hero-credit">Photo by Michael Discenza on Unsplash</a>
+  {/if}
 </section>
 
 <!-- STATS -->
@@ -166,6 +169,8 @@
 .hero-card { max-width:580px; padding:2.5rem; background:rgba(19,27,46,.85); backdrop-filter:blur(6px); border-left:3px solid #D9581F; }
 .hero-card h1 { font-size:clamp(1.75rem,4vw,3rem); font-weight:800; color:white; line-height:1.2; margin-bottom:1rem; }
 .hero-card p { font-size:1rem; color:rgba(255,255,255,.75); line-height:1.7; margin-bottom:2rem; }
+.hero-credit { position:absolute; right:1rem; bottom:1rem; z-index:10; font-size:.6875rem; color:rgba(255,255,255,.55); }
+.hero-credit:hover { color:rgba(255,255,255,.85); }
 .btns { display:flex; flex-wrap:wrap; gap:1rem; }
 .btn-ember { display:inline-flex; align-items:center; gap:.5rem; padding:.75rem 1.5rem; background:#D9581F; color:white; font-size:.8125rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; transition:background .2s; }
 .btn-ember:hover { background:#bf4a16; }
