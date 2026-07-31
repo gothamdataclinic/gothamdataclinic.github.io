@@ -3,7 +3,7 @@
   import { uploadUrl } from '$lib/cms'
   let { data }: { data: PageData } = $props()
 
-  let selectedAmount = $state(100)
+  let selectedAmount: number | null = $state(100)
   let customAmount = $state('')
   const amounts = [25, 50, 100, 250, 500, 1000]
 
@@ -17,24 +17,29 @@
   let donationPlatform = $derived(data.settings?.donationPlatformName || 'Every.org')
   let heroImage = $derived(uploadUrl(data.settings?.donateHeroImage))
   let ein = $derived(data.settings?.ein || '84-3894797')
-  let finalAmount = $derived(customAmount ? parseInt(customAmount) : selectedAmount)
+  let finalAmount: number | null = $derived(customAmount ? parseInt(customAmount) : selectedAmount)
   let donationIntro = $derived(data.settings?.donationIntro || 'Gotham Data Clinic is entirely supported by the generosity of donors like you. Your gift helps us bring world-class data science education to students across New York City who need it most.')
   let impactBlurbs = $derived(data.settings?.impactBlurbs?.length ? data.settings.impactBlurbs : fallbackImpactBlurbs)
   let heroHeadline = $derived(data.settings?.donateHeroHeadline || 'Invest in the Next Generation of Scientists and Technologists')
 
-  // Every.org's embed widget intercepts clicks on the link inside
-  // #every-donate-btn and opens its donation modal in place, instead of
-  // navigating away. See https://github.com/everydotorg/donate-button/wiki/Widget-Configuration
+  // Every.org's embed widget opens its donation modal in place instead of
+  // navigating away. We drive it explicitly (setOptions + showWidget) rather
+  // than relying on its auto-bound `selector` click listener, which only
+  // respects the amount set at widget-creation time, not later updates.
+  // See https://github.com/everydotorg/donate-button/wiki/Widget-Configuration
+  let widgetReady = $state(false)
+
   $effect(() => {
     if (typeof window === 'undefined') return
     const w = window as any
     function init() {
       w.everyDotOrgDonateButton?.createWidget({
-        selector: '#every-donate-btn',
+        selector: '#every-donate-btn-anchor',
         nonprofitSlug: 'gotham-data-clinic',
         primaryColor: '#D9581F',
         addAmounts: amounts,
       })
+      widgetReady = true
     }
     if (w.everyDotOrgDonateButton) {
       init()
@@ -51,6 +56,34 @@
     }
     script.addEventListener('load', init)
   })
+
+  // Keep the widget's amount in sync with the visitor's selection reactively
+  // — no need to set it at click time, it's always already current. The
+  // widget silently ignores `amount: null` (leaves whatever was there
+  // before), but `amount: 0` actually clears the field back to blank — so
+  // that's what we send when nothing is selected.
+  $effect(() => {
+    const amount = finalAmount ?? 0
+    if (!widgetReady || typeof window === 'undefined') return
+    ;(window as any).everyDotOrgDonateButton?.setOptions({ amount })
+  })
+
+  function openDonateWidget(e: MouseEvent) {
+    if (typeof window === 'undefined' || !widgetReady) return
+    const w = window as any
+    if (!w.everyDotOrgDonateButton) return
+    e.preventDefault()
+    w.everyDotOrgDonateButton.showWidget()
+  }
+
+  // Every.org hides its own "+25/+50/..." quick-adjust pills once an amount
+  // is pre-filled (they'd be ambiguous — add to the existing amount, or set
+  // it?), so clearing the selection here gives that free-form pill
+  // experience once the visitor opens the modal.
+  function clearAmount() {
+    selectedAmount = null
+    customAmount = ''
+  }
 </script>
 
 <svelte:head>
@@ -100,16 +133,18 @@
         {#each amounts as amt}
           <button class="amt-btn" class:selected={selectedAmount === amt && !customAmount} onclick={() => { selectedAmount = amt; customAmount = ''; }}>${amt}</button>
         {/each}
+        <button class="amt-btn amt-btn-clear" class:selected={selectedAmount === null && !customAmount} onclick={clearAmount}>Clear</button>
       </div>
       <div class="custom-wrap">
         <label class="section-label" style="margin-bottom:.5rem;">Or enter a custom amount</label>
         <div class="custom-input-wrap">
           <span class="dollar">$</span>
-          <input type="number" min="1" placeholder="Enter amount" bind:value={customAmount} oninput={() => selectedAmount = 0} class="custom-input" />
+          <input type="number" min="1" placeholder="Enter amount" bind:value={customAmount} oninput={() => selectedAmount = null} class="custom-input" />
         </div>
       </div>
-      <div id="every-donate-btn">
-        <a href={donationUrl} target="_blank" rel="noopener" class="btn-donate">Donate {finalAmount ? '$' + finalAmount : ''} Now &#8594;</a>
+      <a href={donationUrl} target="_blank" rel="noopener" class="btn-donate" onclick={openDonateWidget}>Donate {finalAmount ? '$' + finalAmount : ''} Now &#8594;</a>
+      <div id="every-donate-btn-anchor" style="display:none;">
+        <a href={donationUrl}>Donate</a>
       </div>
       <p class="fine-print">Secure donation processing &middot; Tax receipt provided &middot; EIN: {ein}</p>
     </div>
@@ -146,6 +181,8 @@ h3{font-size:1.125rem;font-weight:700;color:#1D2B4A;margin-bottom:.75rem;}
 .amount-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem;}
 .amt-btn{padding:.75rem;font-size:.875rem;font-weight:700;border:2px solid #DDE2EE;background:white;color:#1D2B4A;cursor:pointer;transition:all .15s;}
 .amt-btn.selected{background:#1D2B4A;color:white;border-color:#1D2B4A;}
+.amt-btn-clear{grid-column:2;color:#3D4A73;border-style:dashed;}
+.amt-btn-clear.selected{background:#3D4A73;border-color:#3D4A73;}
 .custom-wrap{margin-bottom:1.5rem;}
 .custom-input-wrap{position:relative;}
 .dollar{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);font-weight:700;color:#1D2B4A;}

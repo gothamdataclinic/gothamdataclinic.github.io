@@ -633,7 +633,7 @@ export interface Donate {
    */
   donateHeroHeadline?: string | null;
   /**
-   * Paste your full donation link here (PayPal Giving Fund, Donorbox, Stripe, etc.). This updates the "Donate Now" button across the entire website automatically.
+   * Paste your full donation link here (Every.org, PayPal Giving Fund, Stripe, etc.). This updates the "Donate Now" button across the entire website automatically.
    */
   donationUrl?: string | null;
   /**

@@ -25,12 +25,12 @@ export const Donate: GlobalConfig = {
       label: 'Donation Platform URL',
       type: 'text',
       admin: {
-        description: 'Paste your full donation link here (PayPal Giving Fund, Donorbox, Stripe, etc.). This updates the "Donate Now" button across the entire website automatically.',
+        description: 'Paste your full donation link here (Every.org, PayPal Giving Fund, Stripe, etc.). This updates the "Donate Now" button across the entire website automatically.',
       },
     },
     {
       name: 'donationPlatformName',
-      label: 'Platform Name (e.g. PayPal, Donorbox)',
+      label: 'Platform Name (e.g. Every.org, PayPal)',
       type: 'text',
       admin: {
         description: 'Shown as a small label on the donate page.',
