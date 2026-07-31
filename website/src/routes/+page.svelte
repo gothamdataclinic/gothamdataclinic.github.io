@@ -6,7 +6,7 @@
 
   const fallbackPrograms = [
     { label: 'Neuroscience', title: 'BrainWaves', description: 'Our flagship program connecting EEG hardware to students\' computers, letting them observe their own brain activity and run real neuroscience experiments — the same way researchers do.' },
-    { label: 'Data Science', title: 'Data Science Education', description: 'Hands-on workshops and curriculum teaching Python, machine learning, and AI to the next generation of NYC scientists and technologists.' },
+    { label: 'Data Science', title: 'Data Science Education', description: 'Hands-on workshops and curriculum teaching Python, machine learning, and AI to the next generation of scientists and technologists.' },
     { label: 'Community', title: 'Public Engagement', description: 'We bring computational science to the broader public through lectures, events, and scholarly publications that make complex ideas accessible.' },
     { label: 'Curriculum', title: 'Open Curriculum', description: 'We develop and freely share next-generation educational content and platforms for computing and data science, built for NYC\'s diverse student population.' },
   ]
@@ -74,7 +74,7 @@
   <div class="container two-col">
     <div>
       <span class="section-label">Our Mission</span>
-      <h2>Advancing the frontiers of computational and data science education</h2>
+      <h2>Advancing the frontiers of computing and data science education</h2>
       <p class="body">{missionSectionBody}</p>
       <blockquote class="ember-border" style="margin: 1.5rem 0;">
         <p class="body" style="font-style:italic;">"{visionQuote}"</p>
@@ -153,7 +153,7 @@
   <div class="container two-col" style="align-items:center;">
     <div>
       <span class="section-label" style="color:#D9581F;">Support Our Work</span>
-      <h2 style="color:white;">Help us train the next generation of NYC data scientists</h2>
+      <h2 style="color:white;">Help us train the next generation of scientists and technologists</h2>
     </div>
     <div>
       <p style="color:rgba(255,255,255,0.65);font-size:1rem;line-height:1.7;margin-bottom:2rem;">Your tax-deductible donation directly funds workshops, curriculum development, and public engagement programs that bring computational science to students across New York City.</p>
