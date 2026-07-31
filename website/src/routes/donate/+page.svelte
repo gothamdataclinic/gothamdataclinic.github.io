@@ -13,14 +13,44 @@
     { title: 'Advance Research', description: 'Support our scholarly publications and public engagement efforts that contribute to the national conversation on responsible computing education.' },
   ]
 
-  let donationUrl = $derived(data.settings?.donationUrl || 'https://donorbox.org/give-to-gotham-data-clinic')
-  let donationPlatform = $derived(data.settings?.donationPlatformName || 'Donorbox')
+  let donationUrl = $derived(data.settings?.donationUrl || 'https://www.every.org/gotham-data-clinic#/donate')
+  let donationPlatform = $derived(data.settings?.donationPlatformName || 'Every.org')
   let heroImage = $derived(uploadUrl(data.settings?.donateHeroImage))
   let ein = $derived(data.settings?.ein || '84-3894797')
   let finalAmount = $derived(customAmount ? parseInt(customAmount) : selectedAmount)
   let donationIntro = $derived(data.settings?.donationIntro || 'Gotham Data Clinic is entirely supported by the generosity of donors like you. Your gift helps us bring world-class data science education to students across New York City who need it most.')
   let impactBlurbs = $derived(data.settings?.impactBlurbs?.length ? data.settings.impactBlurbs : fallbackImpactBlurbs)
   let heroHeadline = $derived(data.settings?.donateHeroHeadline || 'Invest in the Next Generation of Scientists and Technologists')
+
+  // Every.org's embed widget intercepts clicks on the link inside
+  // #every-donate-btn and opens its donation modal in place, instead of
+  // navigating away. See https://github.com/everydotorg/donate-button/wiki/Widget-Configuration
+  $effect(() => {
+    if (typeof window === 'undefined') return
+    const w = window as any
+    function init() {
+      w.everyDotOrgDonateButton?.createWidget({
+        selector: '#every-donate-btn',
+        nonprofitSlug: 'gotham-data-clinic',
+        primaryColor: '#D9581F',
+        addAmounts: amounts,
+      })
+    }
+    if (w.everyDotOrgDonateButton) {
+      init()
+      return
+    }
+    let script = document.querySelector<HTMLScriptElement>('script[data-every-org-widget]')
+    if (!script) {
+      script = document.createElement('script')
+      script.src = 'https://embeds.every.org/0.4/button.js?explicit=1'
+      script.async = true
+      script.defer = true
+      script.dataset.everyOrgWidget = 'true'
+      document.head.appendChild(script)
+    }
+    script.addEventListener('load', init)
+  })
 </script>
 
 <svelte:head>
@@ -78,7 +108,9 @@
           <input type="number" min="1" placeholder="Enter amount" bind:value={customAmount} oninput={() => selectedAmount = 0} class="custom-input" />
         </div>
       </div>
-      <a href={donationUrl} target="_blank" rel="noopener" class="btn-donate">Donate {finalAmount ? '$' + finalAmount : ''} Now &#8594;</a>
+      <div id="every-donate-btn">
+        <a href={donationUrl} target="_blank" rel="noopener" class="btn-donate">Donate {finalAmount ? '$' + finalAmount : ''} Now &#8594;</a>
+      </div>
       <p class="fine-print">Secure donation processing &middot; Tax receipt provided &middot; EIN: {ein}</p>
     </div>
   </div>
