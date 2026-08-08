@@ -1,8 +1,14 @@
 import type { CollectionConfig } from 'payload'
 
+import { triggerRebuild } from '@/lib/triggerRebuild'
+
 export const TeamMembers: CollectionConfig = {
   slug: 'team-members',
   labels: { singular: 'Team Member', plural: 'Team Members' },
+  hooks: {
+    afterChange: [async ({ doc }) => { await triggerRebuild(); return doc }],
+    afterDelete: [async ({ doc }) => { await triggerRebuild(); return doc }],
+  },
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'role', 'memberType'],

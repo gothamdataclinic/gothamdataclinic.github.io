@@ -1,10 +1,14 @@
 import type { GlobalConfig } from 'payload'
 
 import { SITE_URL } from '@/lib/siteUrl'
+import { triggerRebuild } from '@/lib/triggerRebuild'
 
 export const Donate: GlobalConfig = {
   slug: 'donate',
   label: 'Donate Page',
+  hooks: {
+    afterChange: [async ({ doc }) => { await triggerRebuild(); return doc }],
+  },
   admin: {
     description: 'Content for the Donate page (/donate).',
     group: 'Pages',

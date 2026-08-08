@@ -3,6 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: 'main'
+  # Fired by the CMS's afterChange hooks (cms/src/lib/triggerRebuild.ts) so
+  # publishing content rebuilds the static site without a manual git push.
+  repository_dispatch:
+    types: [cms-content-updated]
 
 # Queue deployments instead of racing them — GitHub's Pages environment can
 # only have one deployment in flight at a time, and back-to-back pushes were

@@ -1,8 +1,13 @@
 import type { GlobalConfig } from 'payload'
 
+import { triggerRebuild } from '@/lib/triggerRebuild'
+
 export const General: GlobalConfig = {
   slug: 'general',
   label: 'General / Site-wide',
+  hooks: {
+    afterChange: [async ({ doc }) => { await triggerRebuild(); return doc }],
+  },
   admin: {
     description: 'Settings shared across multiple pages: branding, contact info, and copy that appears on more than one page.',
     group: 'Site-wide',

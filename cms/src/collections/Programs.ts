@@ -1,8 +1,14 @@
 import type { CollectionConfig } from 'payload'
 
+import { triggerRebuild } from '@/lib/triggerRebuild'
+
 export const Programs: CollectionConfig = {
   slug: 'programs',
   labels: { singular: 'Program', plural: 'Programs' },
+  hooks: {
+    afterChange: [async ({ doc }) => { await triggerRebuild(); return doc }],
+    afterDelete: [async ({ doc }) => { await triggerRebuild(); return doc }],
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'label', 'order'],

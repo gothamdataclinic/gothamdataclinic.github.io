@@ -1,10 +1,14 @@
 import type { GlobalConfig } from 'payload'
 
 import { SITE_URL } from '@/lib/siteUrl'
+import { triggerRebuild } from '@/lib/triggerRebuild'
 
 export const About: GlobalConfig = {
   slug: 'about',
   label: 'About Page',
+  hooks: {
+    afterChange: [async ({ doc }) => { await triggerRebuild(); return doc }],
+  },
   admin: {
     description: 'Content for the About & Mission page (/about).',
     group: 'Pages',
