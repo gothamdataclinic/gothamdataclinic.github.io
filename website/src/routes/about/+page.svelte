@@ -147,20 +147,14 @@
 </section>
 
 <style>
-.page-hero{position:relative;padding:10rem 0 5rem;overflow:hidden;background:#1D2B4A;}
+.page-hero{position:relative;overflow:hidden;}
 .hero-bg{position:absolute;inset:0;opacity:.15;background-size:cover;background-position:center;}
 .hero-sub{font-size:1.125rem;line-height:1.7;color:rgba(255,255,255,.65);max-width:40rem;margin-top:1.5rem;}
-h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:800;color:white;line-height:1.15;}
-.sec-white{background:#fff;padding:5rem 0;}
-.sec-canvas{background:#F3F5FA;padding:5rem 0;}
-.two-col{display:grid;gap:3rem;}
-@media(min-width:1024px){.two-col{grid-template-columns:1fr 1fr;gap:5rem;}}
 .three-col{display:grid;gap:2rem;margin-top:3rem;}
 @media(min-width:768px){.three-col{grid-template-columns:repeat(3,1fr);}}
 h2{font-size:clamp(1.5rem,3vw,2.25rem);font-weight:800;color:#1D2B4A;line-height:1.25;margin-bottom:1.5rem;}
 h3{font-size:1.125rem;font-weight:700;color:#1D2B4A;margin-bottom:.75rem;}
 .body{font-size:1rem;line-height:1.7;color:#3D4A73;}
-.sm-body{font-size:.875rem;line-height:1.6;color:#3D4A73;}
 .sec-img{width:100%;height:22rem;object-fit:cover;}
 .pillar-icon{width:3rem;height:3rem;background:#1D2B4A;margin-bottom:1.25rem;}
 .timeline{display:flex;flex-direction:column;gap:0;}
@@ -177,9 +171,4 @@ h3{font-size:1.125rem;font-weight:700;color:#1D2B4A;margin-bottom:.75rem;}
 .sm-val{font-size:1.5rem;font-weight:800;color:#1D2B4A;}
 .sm-lbl{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#D9581F;margin-top:.25rem;}
 .cta-ember{background:#D9581F;padding:4rem 0;}
-.cta-row{display:flex;flex-direction:column;gap:1.5rem;}
-@media(min-width:640px){.cta-row{flex-direction:row;align-items:center;justify-content:space-between;}}
-.btn-navy{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 2rem;background:#1D2B4A;color:white;font-size:.8125rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;transition:background .2s;}
-.btn-navy:hover{background:#131B2E;}
-.tlink{font-size:.8125rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1D2B4A;border-bottom:2px solid #D9581F;padding-bottom:2px;}
 </style>

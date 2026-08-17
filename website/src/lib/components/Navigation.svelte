@@ -1,23 +1,14 @@
 <script lang="ts">
   import { page } from '$app/stores'
   import { onMount } from 'svelte'
-  import { uploadUrl } from '$lib/cms'
+  import { uploadUrl, type SiteSettings } from '$lib/cms'
+  import { navLinks } from '$lib'
 
-  let { settings = {} }: { settings?: Record<string, any> } = $props()
+  let { settings = {} }: { settings?: SiteSettings } = $props()
 
   let scrolled = $state(false)
   let menuOpen = $state(false)
   let logoUrl = $derived(uploadUrl(settings.siteLogo))
-
-  const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About & Mission' },
-    { href: '/team', label: 'Team' },
-    { href: '/events', label: 'Events' },
-    { href: '/press', label: 'Press' },
-    { href: '/donate', label: 'Donate' },
-    { href: '/tax-info', label: 'Tax Information' },
-  ]
 
   onMount(() => {
     const onScroll = () => { scrolled = window.scrollY > 60 }

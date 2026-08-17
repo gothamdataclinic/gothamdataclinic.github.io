@@ -1,8 +1,8 @@
-import { getPrograms, getUpcomingEvents, getMostRecentPastEvent } from '$lib/cms'
+import { getPrograms, getUpcomingEvents, getMostRecentPastEvent, type Event } from '$lib/cms'
 
 export async function load() {
   const [programs, upcomingEvents] = await Promise.all([getPrograms(), getUpcomingEvents()])
-  let featuredEvent = upcomingEvents.find((e: any) => e.featured) ?? upcomingEvents[0] ?? null
+  let featuredEvent: Event | null = upcomingEvents.find((e) => e.featured) ?? upcomingEvents[0] ?? null
   let isPastEvent = false
 
   if (!featuredEvent) {

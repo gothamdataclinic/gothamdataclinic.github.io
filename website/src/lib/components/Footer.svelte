@@ -1,17 +1,9 @@
 <script lang="ts">
-  import { uploadUrl } from '$lib/cms'
+  import { uploadUrl, type SiteSettings } from '$lib/cms'
+  import { navLinks } from '$lib'
 
-  let { settings = {} }: { settings?: Record<string, any> } = $props()
+  let { settings = {} }: { settings?: SiteSettings } = $props()
 
-  const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About & Mission' },
-    { href: '/team', label: 'Our Team' },
-    { href: '/events', label: 'Events' },
-    { href: '/press', label: 'Press' },
-    { href: '/donate', label: 'Donate' },
-    { href: '/tax-info', label: 'Tax Information' },
-  ]
   const year = new Date().getFullYear()
   let ein = $derived(settings.ein ?? '84-3894797')
   let logoUrl = $derived(uploadUrl(settings.siteLogo))

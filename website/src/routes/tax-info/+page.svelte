@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types'
-  import { uploadUrl } from '$lib/cms'
+  import { uploadUrl, type Upload } from '$lib/cms'
 
   let { data }: { data: PageData } = $props()
   let settings = $derived(data.settings ?? {})
@@ -35,7 +35,7 @@
   ]
   let faqs = $derived(settings.faqItems?.length ? settings.faqItems : fallbackFaqs)
 
-  function documentUrl(doc: { file?: any; externalUrl?: string }) {
+  function documentUrl(doc: { file?: Upload; externalUrl?: string }) {
     return uploadUrl(doc.file) || doc.externalUrl || null
   }
 </script>
@@ -140,19 +140,12 @@
 </section>
 
 <style>
-.page-hero{background:#1D2B4A;padding:10rem 0 5rem;}
 .hero-sub{font-size:1.125rem;line-height:1.7;color:rgba(255,255,255,.65);max-width:40rem;margin-top:1.5rem;}
-h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:800;color:white;line-height:1.15;}
 h2{font-size:clamp(1.5rem,3vw,2.25rem);font-weight:800;color:#1D2B4A;line-height:1.25;margin-bottom:2rem;}
 h3{font-size:1.125rem;font-weight:700;color:#1D2B4A;margin-bottom:1rem;}
 h4{font-size:.9375rem;font-weight:700;color:#1D2B4A;margin-bottom:.5rem;}
-.sm-body{font-size:.875rem;line-height:1.6;color:#3D4A73;}
 .badges{display:flex;flex-wrap:wrap;gap:1rem;margin-top:2rem;}
 .badge{font-size:.875rem;font-weight:700;color:#D9581F;padding:.5rem 1rem;border:1px solid rgba(217,88,31,.35);background:rgba(217,88,31,.1);}
-.sec-white{background:#fff;padding:5rem 0;}
-.sec-canvas{background:#F3F5FA;padding:5rem 0;}
-.two-col{display:grid;gap:3rem;}
-@media(min-width:1024px){.two-col{grid-template-columns:1fr 1fr;gap:5rem;}}
 .details-table{border-top:1px solid #DDE2EE;}
 .detail-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:1rem 0;border-bottom:1px solid #DDE2EE;}
 .detail-label{font-size:.875rem;color:#3D4A73;}
@@ -172,8 +165,4 @@ h4{font-size:.9375rem;font-weight:700;color:#1D2B4A;margin-bottom:.5rem;}
 .faq-icon{font-size:1.25rem;color:#D9581F;transition:transform .2s;flex-shrink:0;}
 .faq-a{padding-bottom:1.25rem;}
 .cta-ember{background:#D9581F;padding:4rem 0;}
-.cta-row{display:flex;flex-direction:column;gap:1.5rem;}
-@media(min-width:640px){.cta-row{flex-direction:row;align-items:center;justify-content:space-between;}}
-.btn-navy{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 2rem;background:#1D2B4A;color:white;font-size:.8125rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;transition:background .2s;}
-.btn-navy:hover{background:#131B2E;}
 </style>

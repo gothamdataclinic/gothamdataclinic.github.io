@@ -4,7 +4,7 @@
 
   let pubs = $derived(data.publications ?? [])
 
-  let years = $derived([...new Set(pubs.map((p: any) => p.year))].sort((a: any, b: any) => b - a))
+  let years = $derived([...new Set(pubs.map((p) => p.year).filter((y): y is number => y != null))].sort((a, b) => b - a))
 </script>
 
 <svelte:head>
@@ -33,7 +33,7 @@
         <div class="year-group">
           <h2 class="year-heading">{year}</h2>
           <div class="pub-list">
-            {#each pubs.filter((p: any) => p.year === year) as pub}
+            {#each pubs.filter((p) => p.year === year) as pub}
               <div class="pub-card card-hover">
                 <div class="pub-meta">
                   {#if pub.publicationType}<span class="pub-type">{pub.publicationType}</span>{/if}
@@ -74,12 +74,8 @@
 </section>
 
 <style>
-.page-hero{background:#1D2B4A;padding:10rem 0 5rem;}
 .hero-sub{font-size:1.125rem;line-height:1.7;color:rgba(255,255,255,.65);max-width:40rem;margin-top:1.5rem;}
-h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:800;color:white;line-height:1.15;}
 h3{font-size:1.125rem;font-weight:700;color:#1D2B4A;margin-bottom:.5rem;}
-.sm-body{font-size:.875rem;line-height:1.6;color:#3D4A73;}
-.sec-canvas{background:#F3F5FA;padding:5rem 0;}
 .year-group{margin-bottom:3rem;}
 .year-heading{font-size:1.5rem;font-weight:800;color:#1D2B4A;border-bottom:2px solid #D9581F;padding-bottom:.5rem;margin-bottom:1.5rem;display:inline-block;}
 .pub-list{display:flex;flex-direction:column;gap:1.5rem;}
@@ -94,8 +90,6 @@ h3{font-size:1.125rem;font-weight:700;color:#1D2B4A;margin-bottom:.5rem;}
 .pub-link:hover{opacity:.7;}
 .empty{text-align:center;padding:4rem;color:#3D4A73;font-size:1rem;}
 .cta-navy{background:#1D2B4A;padding:4rem 0;}
-.cta-row{display:flex;flex-direction:column;gap:1.5rem;}
-@media(min-width:640px){.cta-row{flex-direction:row;align-items:center;justify-content:space-between;}}
 .btn-ember{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 2rem;background:#D9581F;color:white;font-size:.8125rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;transition:background .2s;}
 .btn-ember:hover{background:#bf4a16;}
 </style>

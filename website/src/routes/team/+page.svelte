@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types'
-  import { uploadUrl } from '$lib/cms'
+  import { uploadUrl, type TeamMember } from '$lib/cms'
   let { data }: { data: PageData } = $props()
 
   let heroImage = $derived(uploadUrl(data.settings?.teamHeroImage))
@@ -22,9 +22,9 @@
     return avatarColors[hash % avatarColors.length]
   }
 
-  let selectedMember: any = $state(null)
+  let selectedMember: TeamMember | null = $state(null)
 
-  function openMember(member: any) {
+  function openMember(member: TeamMember) {
     selectedMember = member
   }
 
@@ -33,25 +33,29 @@
   }
 
   $effect(() => {
-    document.body.style.overflow = selectedMember ? 'hidden' : ''
+    if (!selectedMember) return
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = ''
+    }
   })
 
   function onKeydown(e: KeyboardEvent) {
     if (e.key === 'Escape') closeMember()
   }
 
-  let current = $derived((data.team ?? []).filter((m: any) => m.memberType === 'current'))
-  let founding = $derived((data.team ?? []).filter((m: any) => m.memberType === 'founding'))
+  let current = $derived((data.team ?? []).filter((m) => m.memberType === 'current'))
+  let founding = $derived((data.team ?? []).filter((m) => m.memberType === 'founding'))
 
   // Fallback static data if Sanity not yet connected
-  const staticCurrent = [
-    { _id:'1', name:'Eric Chen, Ph.D', role:'Team Member', bio:'Eric is a Brooklyn native who joined GDC while performing computational chemistry research at NYU. He recently led the development of the Chemistry department’s first STEM outreach program with local high schools.', tags:['Computational Chemistry','STEM Outreach','NYU'] },
-    { _id:'2', name:'Nicolas Bustamente', role:'Team Member', bio:'Nicholas is from Queens, New York, and graduated as a Computer Engineer from Binghamton University in 2024. He is now an ETL Developer for MUFG Securities, joining the Gotham Data Clinic team in 2025.', tags:['Computer Engineering','ETL Development','Data Engineering'] },
+  const staticCurrent: TeamMember[] = [
+    { id:'1', name:'Eric Chen, Ph.D', role:'Team Member', bio:'Eric is a Brooklyn native who joined GDC while performing computational chemistry research at NYU. He recently led the development of the Chemistry department’s first STEM outreach program with local high schools.', tags:['Computational Chemistry','STEM Outreach','NYU'] },
+    { id:'2', name:'Nicolas Bustamente', role:'Team Member', bio:'Nicholas is from Queens, New York, and graduated as a Computer Engineer from Binghamton University in 2024. He is now an ETL Developer for MUFG Securities, joining the Gotham Data Clinic team in 2025.', tags:['Computer Engineering','ETL Development','Data Engineering'] },
   ]
-  const staticFounding = [
-    { _id:'3', name:'Teon Brooks, Ph.D', role:'Co-Founder & President', bio:'Teon is the co-founder and President of Gotham Data Clinic. A trained cognitive scientist with extensive experience in data science and research software engineering, he has over a decade of open-source software contribution, primarily in brain imaging research.', tags:['Cognitive Science','Data Science','Brain Imaging','Open Source'] },
-    { _id:'4', name:'Mya Doelling, MBA', role:'Founding Member', bio:'Mya joined GDC while serving as a Manager of Global Partnerships at the International Olympic Committee. Prior to her current role, Mya began her career as Director of Operations for the Michael Phelps Foundation.', tags:['Global Partnerships','Operations','Nonprofit Leadership'] },
-    { _id:'5', name:'Steven Azeka, Ed.D', role:'Founding Member', bio:'Steve joined Gotham Data Clinic while serving as a Program Lead for Responsible Computing at Mozilla and an Adjunct at the College of Staten Island. He taught STEM at the elementary and high school levels in California and New York.', tags:['Responsible Computing','Mozilla','Education','BrainWaves'] },
+  const staticFounding: TeamMember[] = [
+    { id:'3', name:'Teon Brooks, Ph.D', role:'Co-Founder & President', bio:'Teon is the co-founder and President of Gotham Data Clinic. A trained cognitive scientist with extensive experience in data science and research software engineering, he has over a decade of open-source software contribution, primarily in brain imaging research.', tags:['Cognitive Science','Data Science','Brain Imaging','Open Source'] },
+    { id:'4', name:'Mya Doelling, MBA', role:'Founding Member', bio:'Mya joined GDC while serving as a Manager of Global Partnerships at the International Olympic Committee. Prior to her current role, Mya began her career as Director of Operations for the Michael Phelps Foundation.', tags:['Global Partnerships','Operations','Nonprofit Leadership'] },
+    { id:'5', name:'Steven Azeka, Ed.D', role:'Founding Member', bio:'Steve joined Gotham Data Clinic while serving as a Program Lead for Responsible Computing at Mozilla and an Adjunct at the College of Staten Island. He taught STEM at the elementary and high school levels in California and New York.', tags:['Responsible Computing','Mozilla','Education','BrainWaves'] },
   ]
 
   let displayCurrent = $derived(current.length ? current : staticCurrent)
@@ -96,7 +100,7 @@
             <p class="sm-body">{member.bio}</p>
             <div class="tags">
               {#each (member.tags ?? []) as tag}
-                <span class="tag">{typeof tag === 'string' ? tag : tag.tag}</span>
+                <span class="tag">{tag}</span>
               {/each}
             </div>
           </div>
@@ -126,7 +130,7 @@
             <p class="sm-body">{member.bio}</p>
             <div class="tags">
               {#each (member.tags ?? []) as tag}
-                <span class="tag">{typeof tag === 'string' ? tag : tag.tag}</span>
+                <span class="tag">{tag}</span>
               {/each}
             </div>
           </div>
@@ -166,7 +170,7 @@
         <p class="sm-body">{selectedMember.bio}</p>
         <div class="tags">
           {#each (selectedMember.tags ?? []) as tag}
-            <span class="tag">{typeof tag === 'string' ? tag : tag.tag}</span>
+            <span class="tag">{tag}</span>
           {/each}
         </div>
         {#if selectedMember.linkedinUrl || selectedMember.personalSiteUrl}
@@ -185,15 +189,11 @@
 {/if}
 
 <style>
-.page-hero{position:relative;padding:10rem 0 5rem;overflow:hidden;background:#1D2B4A;}
+.page-hero{position:relative;overflow:hidden;}
 .hero-bg{position:absolute;inset:0;opacity:.15;background-size:cover;background-position:center;}
 .hero-sub{font-size:1.125rem;line-height:1.7;color:rgba(255,255,255,.65);max-width:40rem;margin-top:1.5rem;}
-h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:800;color:white;line-height:1.15;}
 h2{font-size:clamp(1.5rem,3vw,2.25rem);font-weight:800;color:#1D2B4A;line-height:1.25;margin-bottom:2rem;}
 h3{font-size:1.125rem;font-weight:700;color:#1D2B4A;margin-bottom:.75rem;}
-.sm-body{font-size:.875rem;line-height:1.6;color:#3D4A73;}
-.sec-white{background:#fff;padding:5rem 0;}
-.sec-canvas{background:#F3F5FA;padding:5rem 0;}
 .team-grid{display:grid;gap:2rem;}
 @media(min-width:640px){.team-grid{grid-template-columns:repeat(2,1fr);}}
 @media(min-width:1024px){.team-grid{grid-template-columns:repeat(3,1fr);}}
@@ -207,10 +207,6 @@ img.avatar{opacity:.55;}
 .tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem;}
 .tag{font-size:.75rem;padding:.25rem .5rem;background:rgba(255,255,255,.12);color:white;}
 .cta-ember{background:#D9581F;padding:4rem 0;}
-.cta-row{display:flex;flex-direction:column;gap:1.5rem;}
-@media(min-width:640px){.cta-row{flex-direction:row;align-items:center;justify-content:space-between;}}
-.btn-navy{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 2rem;background:#1D2B4A;color:white;font-size:.8125rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;transition:background .2s;}
-.btn-navy:hover{background:#131B2E;}
 
 .modal-overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:1.5rem;}
 .modal-backdrop{position:absolute;inset:0;width:100%;height:100%;background:rgba(19,27,46,.72);border:none;padding:0;margin:0;cursor:pointer;z-index:0;}

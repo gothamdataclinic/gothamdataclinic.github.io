@@ -1,10 +1,11 @@
 <script lang="ts">
   import type { PageData } from './$types'
+  import type { Event } from '$lib/cms'
   let { data }: { data: PageData } = $props()
 
   let events = $derived(data.events ?? [])
-  let upcomingEvents = $derived(events.filter((e: any) => new Date(e.date).getTime() >= Date.now()))
-  let pastEvents = $derived(events.filter((e: any) => new Date(e.date).getTime() < Date.now()))
+  let upcomingEvents = $derived(events.filter((e) => new Date(e.date).getTime() >= Date.now()))
+  let pastEvents = $derived(events.filter((e) => new Date(e.date).getTime() < Date.now()))
 
   function formatDate(dateStr: string) {
     return new Date(dateStr).toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' })
@@ -31,7 +32,7 @@
 
 <section class="sec-canvas">
   <div class="container">
-    {#snippet eventRow(event: any)}
+    {#snippet eventRow(event: Event)}
       <div class="event-row card-hover">
         <div class="event-date-col">
           <div class="month">{new Date(event.date).toLocaleDateString('en-US',{month:'short'}).toUpperCase()}</div>
@@ -94,12 +95,8 @@
 </section>
 
 <style>
-.page-hero{background:#1D2B4A;padding:10rem 0 5rem;}
 .hero-sub{font-size:1.125rem;line-height:1.7;color:rgba(255,255,255,.65);max-width:40rem;margin-top:1.5rem;}
-h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:800;color:white;line-height:1.15;}
 h3{font-size:1.25rem;font-weight:700;color:#1D2B4A;margin-bottom:.5rem;}
-.sm-body{font-size:.875rem;line-height:1.6;color:#3D4A73;}
-.sec-canvas{background:#F3F5FA;padding:5rem 0;}
 .events-section-header{font-size:1.25rem;font-weight:800;color:#1D2B4A;margin-bottom:1.5rem;}
 .events-list{display:flex;flex-direction:column;gap:1.5rem;}
 .event-row{display:grid;grid-template-columns:auto 1fr auto;gap:2rem;align-items:start;background:white;padding:2rem;border:1px solid #DDE2EE;}
@@ -114,7 +111,5 @@ h3{font-size:1.25rem;font-weight:700;color:#1D2B4A;margin-bottom:.5rem;}
 .btn-ember:hover{background:#bf4a16;}
 .empty{text-align:center;padding:4rem;color:#3D4A73;font-size:1rem;}
 .cta-navy{background:#1D2B4A;padding:4rem 0;}
-.cta-row{display:flex;flex-direction:column;gap:1.5rem;}
-@media(min-width:640px){.cta-row{flex-direction:row;align-items:center;justify-content:space-between;}}
 .tlink{font-size:.8125rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1D2B4A;border-bottom:2px solid #D9581F;padding-bottom:2px;}
 </style>

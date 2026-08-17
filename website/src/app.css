@@ -111,3 +111,19 @@ img { display: block; max-width: 100%; }
 }
 @media (min-width: 640px)  { .container { padding: 0 1.5rem; } }
 @media (min-width: 1024px) { .container { padding: 0 2rem; } }
+
+/* ── Shared page layout ──────────────────────────────────────
+   Duplicated verbatim across every inner-page route before being
+   pulled up here. Pages that need more (background image, overflow
+   clipping, etc.) layer extra rules on top in their own <style>. */
+.page-hero { background: var(--navy); padding: 10rem 0 5rem; }
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; color: white; line-height: 1.15; }
+.sm-body { font-size: .875rem; line-height: 1.6; color: var(--slate); }
+.sec-white { background: var(--paper); padding: 5rem 0; }
+.sec-canvas { background: var(--canvas); padding: 5rem 0; }
+.two-col { display: grid; gap: 3rem; }
+@media (min-width: 1024px) { .two-col { grid-template-columns: 1fr 1fr; gap: 5rem; } }
+.cta-row { display: flex; flex-direction: column; gap: 1.5rem; }
+@media (min-width: 640px) { .cta-row { flex-direction: row; align-items: center; justify-content: space-between; } }
+.btn-navy { display: inline-flex; align-items: center; gap: .5rem; padding: 1rem 2rem; background: var(--navy); color: white; font-size: .8125rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; transition: background .2s; }
+.btn-navy:hover { background: var(--ink); }

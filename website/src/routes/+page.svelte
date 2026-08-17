@@ -184,10 +184,6 @@
 .stat { text-align:center; }
 .stat-val { font-size:1.875rem; font-weight:800; color:white; }
 .stat-lbl { font-size:.7rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.55); margin-top:.25rem; }
-.sec-white { background:#fff; padding:5rem 0; }
-.sec-canvas { background:#F3F5FA; padding:5rem 0; }
-.two-col { display:grid; gap:3rem; }
-@media(min-width:1024px){.two-col{grid-template-columns:1fr 1fr; gap:5rem;}}
 .four-col { display:grid; gap:1.5rem; margin-top:3rem; }
 @media(min-width:640px){.four-col{grid-template-columns:repeat(2,1fr);}}
 @media(min-width:1024px){.four-col{grid-template-columns:repeat(4,1fr);}}
@@ -196,7 +192,6 @@
 h2 { font-size:clamp(1.5rem,3vw,2.25rem); font-weight:800; color:#1D2B4A; line-height:1.25; margin-bottom:1.5rem; }
 h3 { font-size:1.125rem; font-weight:700; color:#1D2B4A; margin-bottom:.75rem; }
 .body { font-size:1rem; line-height:1.7; color:#3D4A73; }
-.sm-body { font-size:.875rem; line-height:1.6; color:#3D4A73; }
 .sec-img { width:100%; height:22rem; object-fit:cover; }
 .prog-card { padding:1.5rem; border:1px solid #DDE2EE; background:white; }
 .events-single { max-width:40rem; }
