@@ -37,13 +37,17 @@ export const googleWorkspaceStrategy: AuthStrategy = {
       return { user: null }
     }
 
-    let result = await payload.find({
+    const result = await payload.find({
       collection: 'users',
       where: { email: { equals: data.user.email } },
       limit: 1,
     })
 
-    if (result.docs.length === 0) {
+    if (result.docs.length > 0) {
+      return { user: { ...result.docs[0], collection: 'users' } }
+    }
+
+    try {
       const created = await payload.create({
         collection: 'users',
         data: {
@@ -53,8 +57,17 @@ export const googleWorkspaceStrategy: AuthStrategy = {
         },
       })
       return { user: { ...created, collection: 'users' } }
+    } catch {
+      // Two concurrent first-time logins for the same email can both pass
+      // the find-then-create check above; the loser's create throws on the
+      // unique email constraint. Re-fetch rather than surfacing a 500.
+      const existing = await payload.find({
+        collection: 'users',
+        where: { email: { equals: data.user.email } },
+        limit: 1,
+      })
+      if (existing.docs.length === 0) throw new Error('User provisioning failed')
+      return { user: { ...existing.docs[0], collection: 'users' } }
     }
-
-    return { user: { ...result.docs[0], collection: 'users' } }
   },
 }

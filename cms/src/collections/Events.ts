@@ -1,13 +1,13 @@
 import type { CollectionConfig } from 'payload'
 
-import { triggerRebuild } from '@/lib/triggerRebuild'
+import { afterChangeRebuildHook, afterDeleteRebuildHook } from '@/lib/triggerRebuild'
 
 export const Events: CollectionConfig = {
   slug: 'events',
   labels: { singular: 'Event', plural: 'Events' },
   hooks: {
-    afterChange: [async ({ doc }) => { await triggerRebuild(); return doc }],
-    afterDelete: [async ({ doc }) => { await triggerRebuild(); return doc }],
+    afterChange: [afterChangeRebuildHook],
+    afterDelete: [afterDeleteRebuildHook],
   },
   admin: {
     useAsTitle: 'title',

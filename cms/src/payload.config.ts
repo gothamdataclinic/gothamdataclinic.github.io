@@ -18,6 +18,7 @@ import { TaxInfo } from './globals/TaxInfo'
 import { General } from './globals/General'
 import { googleWorkspaceStrategy } from './authStrategies/googleWorkspace'
 import { SITE_URL } from './lib/siteUrl'
+import { checkMediaBucketPublic } from './lib/checkMediaBucketPublic'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -145,5 +146,10 @@ export default buildConfig({
   // ── TypeScript output ────────────────────────────────────
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
+  },
+
+  // ── Startup checks ───────────────────────────────────────
+  onInit: async (payload) => {
+    await checkMediaBucketPublic(payload)
   },
 })

@@ -2,7 +2,7 @@ import React, { cache } from 'react'
 import { Logout } from '@payloadcms/ui'
 import { RenderServerComponent } from '@payloadcms/ui/elements/RenderServerComponent'
 import { DefaultNavClient, NavHamburger, NavWrapper } from '@payloadcms/next/client'
-import { EntityType, groupNavItems } from '@payloadcms/ui/shared'
+import { EntityType, groupNavItems, type EntityToGroup } from '@payloadcms/ui/shared'
 import { PREFERENCE_KEYS } from 'payload/shared'
 import type { NavPreferences, PayloadRequest, ServerProps } from 'payload'
 
@@ -69,32 +69,27 @@ export const AdminNav: React.FC<NavProps> = async (props) => {
   const visibleCollections = collections.filter(({ slug }) => visibleEntities?.collections.includes(slug))
   const visibleGlobals = globals.filter(({ slug }) => visibleEntities?.globals.includes(slug))
 
-  const orderedPagesEntities = PAGES_GROUP_ORDER.map(({ slug, type }) => {
-    const entity =
-      type === EntityType.collection
-        ? visibleCollections.find((c) => c.slug === slug)
-        : visibleGlobals.find((g) => g.slug === slug)
+  const orderedPagesEntities: EntityToGroup[] = PAGES_GROUP_ORDER.map(({ slug, type }): EntityToGroup | null => {
+    if (type === EntityType.collection) {
+      const entity = visibleCollections.find((c) => c.slug === slug)
+      return entity ? { entity, type } : null
+    }
+    const entity = visibleGlobals.find((g) => g.slug === slug)
     return entity ? { entity, type } : null
-  }).filter((e): e is NonNullable<typeof e> => e !== null)
+  }).filter((e): e is EntityToGroup => e !== null)
 
   const pagesSlugs = new Set(PAGES_GROUP_ORDER.map((e) => e.slug))
   const remainingCollections = visibleCollections.filter((c) => !pagesSlugs.has(c.slug))
   const remainingGlobals = visibleGlobals.filter((g) => !pagesSlugs.has(g.slug))
 
-  const pagesGroup = groupNavItems(
-    orderedPagesEntities.map(({ entity, type }) => ({ entity, type }) as any),
-    permissions,
-    i18n,
-  ).map((group) => ({ ...group, label: 'Pages' }))
+  const pagesGroup = groupNavItems(orderedPagesEntities, permissions, i18n).map((group) => ({ ...group, label: 'Pages' }))
 
-  const remainingGroups = groupNavItems(
-    [
-      ...remainingCollections.map((entity) => ({ type: EntityType.collection, entity }) as any),
-      ...remainingGlobals.map((entity) => ({ type: EntityType.global, entity }) as any),
-    ],
-    permissions,
-    i18n,
-  )
+  const remainingEntities: EntityToGroup[] = [
+    ...remainingCollections.map((entity): EntityToGroup => ({ type: EntityType.collection, entity })),
+    ...remainingGlobals.map((entity): EntityToGroup => ({ type: EntityType.global, entity })),
+  ]
+
+  const remainingGroups = groupNavItems(remainingEntities, permissions, i18n)
 
   const groups = [...pagesGroup, ...remainingGroups]
 

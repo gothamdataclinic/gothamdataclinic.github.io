@@ -1,13 +1,13 @@
 import type { GlobalConfig } from 'payload'
 
 import { SITE_URL } from '@/lib/siteUrl'
-import { triggerRebuild } from '@/lib/triggerRebuild'
+import { globalAfterChangeRebuildHook } from '@/lib/triggerRebuild'
 
 export const Home: GlobalConfig = {
   slug: 'home',
   label: 'Home Page',
   hooks: {
-    afterChange: [async ({ doc }) => { await triggerRebuild(); return doc }],
+    afterChange: [globalAfterChangeRebuildHook],
   },
   admin: {
     description: 'Content for the homepage (/).',
