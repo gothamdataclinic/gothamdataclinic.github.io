@@ -61,7 +61,10 @@ export type SiteSettings = Record<string, any>
 async function fetchAPI<T = any>(path: string): Promise<T | null> {
   try {
     const res = await fetch(`${CMS_URL}/api${path}`, {
-      headers: { 'Content-Type': 'application/json' },
+      // This is a read-only GET request. Do not send Content-Type here: it
+      // turns a simple cross-origin request into a CORS preflight, allowing a
+      // transient CMS startup failure to erase already-rendered page content.
+      headers: { Accept: 'application/json' },
     })
     if (!res.ok) {
       console.error(`CMS fetch failed: ${CMS_URL}/api${path} returned ${res.status}`)
