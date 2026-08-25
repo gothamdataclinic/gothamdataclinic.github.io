@@ -124,6 +124,17 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL,
+      // Supabase's session-mode pooler for this project caps out at 15
+      // total client connections (Supavisor's own limit, well below
+      // Postgres's own max_connections). node-postgres defaults to up to
+      // 10 connections per pool, and Vercel keeps serverless instances warm
+      // between requests — a handful of concurrent instances each opening
+      // their own default-sized pool was enough to exhaust all 15 slots,
+      // locking out the admin panel, the public API, and even a plain
+      // psql connection until an instance happened to cool down. Capping
+      // this low lets far more concurrent instances coexist under the
+      // same ceiling.
+      max: 3,
     },
     // Disable dev-mode schema auto-push. With it on, removing/renaming a
     // field or global makes Payload block every request behind an
