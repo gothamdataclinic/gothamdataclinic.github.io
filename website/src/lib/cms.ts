@@ -58,23 +58,34 @@ export interface Publication {
 // fields and fall back to static copy when a key is absent.
 export type SiteSettings = Record<string, any>
 
+// The build fires a burst of concurrent requests (getSiteSettings alone is
+// 5 in parallel, across several pages during prerender), which has
+// repeatedly tripped transient 500s on the CMS side — a single failed
+// fetch here doesn't just drop one field, it gets baked into the static
+// site until the next successful rebuild. Retry a few times with backoff
+// before giving up, so a transient blip during the burst self-heals within
+// the same build instead of shipping stale/fallback content.
+const RETRY_DELAYS_MS = [300, 900]
+
 async function fetchAPI<T = any>(path: string): Promise<T | null> {
-  try {
-    const res = await fetch(`${CMS_URL}/api${path}`, {
-      // This is a read-only GET request. Do not send Content-Type here: it
-      // turns a simple cross-origin request into a CORS preflight, allowing a
-      // transient CMS startup failure to erase already-rendered page content.
-      headers: { Accept: 'application/json' },
-    })
-    if (!res.ok) {
-      console.error(`CMS fetch failed: ${CMS_URL}/api${path} returned ${res.status}`)
-      return null
+  for (let attempt = 0; attempt <= RETRY_DELAYS_MS.length; attempt++) {
+    try {
+      const res = await fetch(`${CMS_URL}/api${path}`, {
+        // This is a read-only GET request. Do not send Content-Type here: it
+        // turns a simple cross-origin request into a CORS preflight, allowing a
+        // transient CMS startup failure to erase already-rendered page content.
+        headers: { Accept: 'application/json' },
+      })
+      if (res.ok) return res.json()
+      console.error(`CMS fetch failed (attempt ${attempt + 1}/${RETRY_DELAYS_MS.length + 1}): ${CMS_URL}/api${path} returned ${res.status}`)
+    } catch (err) {
+      console.error(`CMS fetch failed (attempt ${attempt + 1}/${RETRY_DELAYS_MS.length + 1}): ${CMS_URL}/api${path}`, err)
     }
-    return res.json()
-  } catch (err) {
-    console.error(`CMS fetch failed: ${CMS_URL}/api${path}`, err)
-    return null
+    if (attempt < RETRY_DELAYS_MS.length) {
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAYS_MS[attempt]))
+    }
   }
+  return null
 }
 
 type PaginatedDocs<T> = { docs: T[] }
