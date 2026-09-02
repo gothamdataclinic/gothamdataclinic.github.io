@@ -567,9 +567,23 @@ export interface Home {
    */
   missionSectionBody?: string | null;
   /**
-   * Full-width background image on the homepage.
+   * Optional. Replaces the New York skyline in the homepage hero. The sky MUST be cut out and saved as a transparent PNG or WebP — the hero renders its own sky behind this image, so a normal photo will just cover it. Leave empty to use the plate that ships with the site.
    */
-  heroImage?: (number | null) | Media;
+  heroSkylinePlate?: (number | null) | Media;
+  /**
+   * Attribution shown in the corner of the hero.
+   */
+  heroPhotoCredit?: {
+    /**
+     * Leave empty to hide the credit entirely.
+     */
+    text?: string | null;
+    url?: string | null;
+  };
+  /**
+   * Which sky the hero opens with. Auto picks sunrise between 5am and 8am, day until 6pm, night after that. Visitors can always switch it themselves, and their choice is remembered.
+   */
+  heroDefaultLook?: ('auto' | 'night' | 'day' | 'sunrise') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -751,7 +765,14 @@ export interface HomeSelect<T extends boolean = true> {
   heroHeadline?: T;
   missionStatement?: T;
   missionSectionBody?: T;
-  heroImage?: T;
+  heroSkylinePlate?: T;
+  heroPhotoCredit?:
+    | T
+    | {
+        text?: T;
+        url?: T;
+      };
+  heroDefaultLook?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
