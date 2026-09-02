@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types'
   import { uploadUrl } from '$lib/cms'
+  import ImpactIcon from '$lib/components/ImpactIcon.svelte'
 
   let { data }: { data: PageData } = $props()
   let settings = $derived(data.settings ?? {})
@@ -10,6 +11,7 @@
     { title: 'Lead Workshops & Training', description: 'We deliver hands-on workshops and training programs in computing and data science, meeting students and communities where they are.' },
     { title: 'Publicize Our Work', description: 'We share our research and programs through scholarly publications and public engagements, contributing to the broader conversation on responsible computing education.' },
   ]
+  const pillarIcons = ['building', 'workshops', 'publishing'] as const
   const fallbackTimeline = [
     { label: 'The Beginning', description: 'Gotham Data Clinic was born out of a National Institutes of Health Science Education Partnership Award granted to NYU to develop and deliver a neuroscience curriculum to high school students in NYC.' },
     { label: 'BrainWaves Program', description: "We created a research platform connecting EEG hardware to students' computers, letting them observe their own brain activity. The BrainWaves curriculum reached thirty different high schools across New York City." },
@@ -85,9 +87,9 @@
     <span class="section-label">Our Mission</span>
     <h2>Three pillars that guide everything we do</h2>
     <div class="three-col">
-      {#each pillars as pillar}
+      {#each pillars as pillar, i}
         <div class="pillar">
-          <div class="pillar-icon"></div>
+          <ImpactIcon type={pillarIcons[i % pillarIcons.length]} />
           <h3>{pillar.title}</h3>
           <p class="sm-body">{pillar.description}</p>
         </div>
@@ -156,7 +158,6 @@ h2{font-size:clamp(1.5rem,3vw,2.25rem);font-weight:800;color:#1D2B4A;line-height
 h3{font-size:1.125rem;font-weight:700;color:#1D2B4A;margin-bottom:.75rem;}
 .body{font-size:1rem;line-height:1.7;color:#3D4A73;}
 .sec-img{width:100%;height:22rem;object-fit:cover;}
-.pillar-icon{width:3rem;height:3rem;background:#1D2B4A;margin-bottom:1.25rem;}
 .timeline{display:flex;flex-direction:column;gap:0;}
 .tl-item{display:flex;gap:1rem;}
 .tl-dot{width:2rem;height:2rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;}

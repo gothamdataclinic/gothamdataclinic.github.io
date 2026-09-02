@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types'
   import { uploadUrl } from '$lib/cms'
+  import ImpactIcon from '$lib/components/ImpactIcon.svelte'
   let { data }: { data: PageData } = $props()
 
   let selectedAmount: number | null = $state(100)
@@ -12,6 +13,7 @@
     { title: 'Sustain Programs', description: 'Help us maintain and expand our BrainWaves platform and curriculum, keeping it freely available to high schools across New York City.' },
     { title: 'Advance Research', description: 'Support our scholarly publications and public engagement efforts that contribute to the national conversation on responsible computing education.' },
   ]
+  const impactIcons = ['workshops', 'building', 'publishing'] as const
 
   let donationUrl = $derived(data.settings?.donationUrl || 'https://www.every.org/gotham-data-clinic#/donate')
   let donationPlatform = $derived(data.settings?.donationPlatformName || 'Every.org')
@@ -112,8 +114,12 @@
     <span class="section-label">Your Impact</span>
     <h2>Where your donation goes</h2>
     <div class="three-col">
-      {#each impactBlurbs as blurb}
-        <div class="impact-item"><div class="impact-icon"></div><h3>{blurb.title}</h3><p class="sm-body">{blurb.description}</p></div>
+      {#each impactBlurbs as blurb, i}
+        <div class="impact-item">
+          <ImpactIcon type={impactIcons[i % impactIcons.length]} />
+          <h3>{blurb.title}</h3>
+          <p class="sm-body">{blurb.description}</p>
+        </div>
       {/each}
     </div>
   </div>
@@ -173,7 +179,6 @@ h3{font-size:1.125rem;font-weight:700;color:#1D2B4A;margin-bottom:.75rem;}
 .body{font-size:1rem;line-height:1.7;color:#3D4A73;}
 .three-col{display:grid;gap:2rem;margin-top:3rem;}
 @media(min-width:768px){.three-col{grid-template-columns:repeat(3,1fr);}}
-.impact-icon{width:3rem;height:3rem;background:#1D2B4A;margin-bottom:1.25rem;}
 .tax-note{padding:1.5rem;border-left:4px solid #D9581F;background:#F3F5FA;}
 .donate-form{padding:2rem;border:1px solid #DDE2EE;background:#F3F5FA;}
 .amount-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem;}
