@@ -19,6 +19,27 @@
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+/* The hero's sky gradient stops. Registered as <color> so they can be
+   transitioned: an unregistered custom property is a token swap, and the
+   gradient built from it snaps between looks instead of crossfading. The
+   per-look values live in SkyHero.svelte next to the rest of that hero's
+   presentation; only the registration has to be global. */
+@property --sky-zenith {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #3f63a8;
+}
+@property --sky-horizon {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #7fa3d4;
+}
+@property --sky-band {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #c3d6ee;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
@@ -100,6 +121,46 @@ img { display: block; max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   .fade-up, .fade-up-1, .fade-up-2, .fade-up-3 { animation: none; }
   .card-hover:hover { transform: none; }
+}
+
+/* ── Hero blur-in reveal ─────────────────────────────────────
+   A sharper entrance than .fade-up, for content sitting on the animated
+   hero: opacity plus a defocus that resolves. Stagger comes from a custom
+   property rather than one class per position, so a caller can order an
+   arbitrary number of siblings.
+
+   These live here rather than in SkyHero.svelte because the hero copy is
+   authored in +page.svelte and passed down as a snippet — Svelte scopes
+   style rules to the component the markup is written in, so a scoped
+   keyframe in SkyHero could never reach it.
+
+   Elements start hidden and are only animated once the hero host carries
+   [data-fx-ready]. The 5s fx-wait failsafe means a hero that never signals
+   ready (WebGL blew up, the module failed to load, JS is off) still shows
+   its copy instead of leaving an empty screen. */
+@keyframes fx-title-in {
+  0%   { opacity: 0; filter: blur(26px); }
+  45%  { opacity: 1; }
+  to   { opacity: 1; filter: blur(0); }
+}
+@keyframes fx-el-in {
+  0%  { opacity: 0; filter: blur(12px); }
+  to  { opacity: 1; filter: blur(0); }
+}
+@keyframes fx-wait { to { opacity: 1; } }
+
+.fx-el, .fx-title { opacity: 0; animation: 0s linear 5s forwards fx-wait; }
+[data-fx-ready] .fx-el,
+[data-fx-ready] .fx-title {
+  animation: 800ms ease-out both fx-el-in;
+  animation-delay: calc(var(--fx-order, 0) * 0.3s);
+}
+[data-fx-ready] .fx-title { animation-name: fx-title-in; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-el, .fx-title,
+  [data-fx-ready] .fx-el,
+  [data-fx-ready] .fx-title { opacity: 1; filter: none; animation: none; }
 }
 
 /* Utility */

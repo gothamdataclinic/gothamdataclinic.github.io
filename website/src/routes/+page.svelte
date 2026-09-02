@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { PageData } from './$types'
   import { uploadUrl } from '$lib/cms'
+  import { isLookId } from '$lib/hero/looks'
+  import SkyHero from '$lib/components/SkyHero.svelte'
 
   let { data }: { data: PageData } = $props()
 
@@ -25,7 +27,10 @@
 
   let heroHeadline = $derived(settings.heroHeadline || 'Training the next-generation of scientists and technologists')
   let heroSubhead = $derived(settings.missionStatement || 'Gotham Data Clinic is a New York City-based nonprofit whose mission is to train the next generation of scientists and technologists in computing and data science — and to engage the public in these vital conversations.')
-  let heroImage = $derived(uploadUrl(settings.heroImage))
+  // 'auto' (and an unset field) means the hero picks by the visitor's clock,
+  // which SkyHero does when it gets no `look`.
+  let heroLook = $derived(isLookId(settings.heroDefaultLook) ? settings.heroDefaultLook : undefined)
+  let heroPlate = $derived(uploadUrl(settings.heroSkylinePlate))
   let missionSectionBody = $derived(settings.missionSectionBody || 'Our vision is to inform, prepare, and train the next generation of scientists and technologists — and the broader public — in computational and data sciences for a more fair and responsible future.')
   let visionQuote = $derived(settings.visionQuote || 'We wanted to find a home for this neuroscience education platform and its curriculum after the grant period ended so we established this nonprofit to be the stewards of the program.')
   let missionVisualImage = $derived(uploadUrl(settings.missionVisualImage))
@@ -39,23 +44,23 @@
 </svelte:head>
 
 <!-- HERO -->
-<section class="hero" style={heroImage ? `background-image:url('${heroImage}');` : ''}>
-  <div class="hero-overlay"></div>
-  <div class="container hero-inner">
-    <div class="hero-card">
-      <span class="section-label fade-up">Our Mission</span>
-      <h1 class="fade-up-1">{heroHeadline}</h1>
-      <p class="fade-up-2">{heroSubhead}</p>
-      <div class="btns fade-up-3">
-        <a href="/about" class="btn-ember">Explore Our Programs →</a>
-        <a href="/donate" class="btn-outline-white">Support Our Work</a>
-      </div>
+<SkyHero
+  look={heroLook}
+  plate={heroPlate}
+  creditText={settings.heroPhotoCredit?.text ?? 'Photo by Michael Discenza on Unsplash'}
+  creditHref={settings.heroPhotoCredit?.url ??
+    'https://unsplash.com/photos/landscape-photo-of-new-york-empire-state-building-5omwAMDxmkU'}
+>
+  <div class="sky-hero-card">
+    <span class="section-label fx-el" style="--fx-order: 0;">Our Mission</span>
+    <h1 class="fx-title" style="--fx-order: 1;">{heroHeadline}</h1>
+    <p class="fx-el" style="--fx-order: 2;">{heroSubhead}</p>
+    <div class="btns fx-el" style="--fx-order: 3;">
+      <a href="/about" class="btn-ember">Explore Our Programs →</a>
+      <a href="/donate" class="btn-outline-white">Support Our Work</a>
     </div>
   </div>
-  {#if heroImage}
-    <a href="https://unsplash.com/photos/landscape-photo-of-new-york-empire-state-building-5omwAMDxmkU" target="_blank" rel="noopener" class="hero-credit">Photo by Michael Discenza on Unsplash</a>
-  {/if}
-</section>
+</SkyHero>
 
 <!-- STATS -->
 <section class="stats-bar">
@@ -163,19 +168,39 @@
 </section>
 
 <style>
-.hero { position:relative; min-height:100vh; display:flex; align-items:flex-end; padding-bottom:5rem; background-size:cover; background-position:center top; background-repeat:no-repeat; }
-.hero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,rgba(19,27,46,.5) 0%,rgba(19,27,46,.7) 50%,rgba(19,27,46,.88) 100%); }
-.hero-inner { position:relative; z-index:10; width:100%; }
-.hero-card { max-width:580px; padding:2.5rem; background:rgba(19,27,46,.85); backdrop-filter:blur(6px); border-left:3px solid #D9581F; }
-.hero-card h1 { font-size:clamp(1.75rem,4vw,3rem); font-weight:800; color:white; line-height:1.2; margin-bottom:1rem; }
-.hero-card p { font-size:1rem; color:rgba(255,255,255,.75); line-height:1.7; margin-bottom:2rem; }
-.hero-credit { position:absolute; right:1rem; bottom:1rem; z-index:10; font-size:.6875rem; color:rgba(255,255,255,.55); }
-.hero-credit:hover { color:rgba(255,255,255,.85); }
+/* The hero's own chrome (sky, plate, swatches) lives in SkyHero.svelte. What
+   stays here is the copy card, because the copy is authored here and Svelte
+   scopes styles to the component the markup is written in.
+
+   The scrim is deliberately lighter than the flat photo hero it replaces: the
+   sky shader thins its cloud deck behind this card (see uShelter), so the type
+   already has somewhere quiet to sit. */
+.sky-hero-card { max-width:580px; padding:2.5rem; background:var(--scrim-card, rgba(19,27,46,.7)); backdrop-filter:blur(8px); border-left:3px solid #D9581F; transition:background 450ms linear; }
+.sky-hero-card h1 { font-size:clamp(1.75rem,4vw,3rem); font-weight:800; color:white; line-height:1.2; margin-bottom:1rem; text-shadow:0 4px 16px rgba(20,40,70,.28); }
+.sky-hero-card p { font-size:1rem; color:rgba(255,255,255,.82); line-height:1.7; margin-bottom:2rem; }
+/* The site-wide .section-label is full ember, which sits at 2.3:1 over the
+   card once the card is floating on a bright daytime sky — the flat-photo hero
+   this replaces got away with it only because it had a second full-hero scrim
+   darkening everything underneath. Ember lightened to #FFB185 measures
+   5.1:1 (day), 5.1:1 (sunrise) and 7.8:1 (night) against the rendered card,
+   so the accent survives without dulling the sky to pay for it. */
+.sky-hero-card .section-label { color:#FFB185; }
 .btns { display:flex; flex-wrap:wrap; gap:1rem; }
 .btn-ember { display:inline-flex; align-items:center; gap:.5rem; padding:.75rem 1.5rem; background:#D9581F; color:white; font-size:.8125rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; transition:background .2s; }
 .btn-ember:hover { background:#bf4a16; }
 .btn-outline-white { display:inline-flex; align-items:center; gap:.5rem; padding:.75rem 1.5rem; border:2px solid white; color:white; font-size:.8125rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; transition:all .2s; }
 .btn-outline-white:hover { background:white; color:#1D2B4A; }
+/* On a phone the card was eating ~71% of the hero: the sky and the skyline —
+   the entire point of it — were reduced to slivers above and below a wall of
+   copy. Tightening the padding and type here reclaims roughly 130px of
+   vertical space, which is what puts the Empire State spire back in open sky
+   above the card. */
+@media (max-width: 639px) {
+  .sky-hero-card { padding:1.75rem; }
+  .sky-hero-card h1 { font-size:clamp(1.5rem,6.6vw,2rem); margin-bottom:.75rem; }
+  .sky-hero-card p { font-size:.9375rem; line-height:1.6; margin-bottom:1.5rem; }
+  .btns { gap:.75rem; }
+}
 .tlink { font-size:.8125rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#1D2B4A; border-bottom:2px solid #D9581F; padding-bottom:2px; transition:color .2s; }
 .tlink:hover { color:#D9581F; }
 .stats-bar { background:#3D4A73; padding:2rem 0; }
