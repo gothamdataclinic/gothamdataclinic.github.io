@@ -33,7 +33,6 @@
   let heroPlate = $derived(uploadUrl(settings.heroSkylinePlate))
   let missionSectionBody = $derived(settings.missionSectionBody || 'Our vision is to inform, prepare, and train the next generation of scientists and technologists — and the broader public — in computational and data sciences for a more fair and responsible future.')
   let visionQuote = $derived(settings.visionQuote || 'We wanted to find a home for this neuroscience education platform and its curriculum after the grant period ended so we established this nonprofit to be the stewards of the program.')
-  let missionVisualImage = $derived(uploadUrl(settings.missionVisualImage))
 </script>
 
 <svelte:head>
@@ -75,20 +74,20 @@
 </section>
 
 <!-- MISSION -->
-<section class="sec-white">
-  <div class="container two-col">
-    <div>
+<section class="mission-section">
+  <div class="container mission-layout">
+    <div class="mission-heading">
       <span class="section-label">Our Mission</span>
       <h2>Advancing the frontiers of computing and data science education</h2>
+    </div>
+    <div class="mission-body">
       <p class="body">{missionSectionBody}</p>
-      <blockquote class="ember-border" style="margin: 1.5rem 0;">
-        <p class="body" style="font-style:italic;">"{visionQuote}"</p>
-      </blockquote>
       <a href="/about" class="tlink">Read Our Full Story →</a>
     </div>
-    {#if missionVisualImage}
-      <img src={missionVisualImage} alt="Data science visualization" class="sec-img" style="box-shadow: 8px 8px 0 #D9581F;" loading="lazy" />
-    {/if}
+    <blockquote class="mission-quote">
+      <span class="quote-mark" aria-hidden="true">“</span>
+      <p>{visionQuote}</p>
+    </blockquote>
   </div>
 </section>
 
@@ -217,7 +216,20 @@
 h2 { font-size:clamp(1.5rem,3vw,2.25rem); font-weight:800; color:#1D2B4A; line-height:1.25; margin-bottom:1.5rem; }
 h3 { font-size:1.125rem; font-weight:700; color:#1D2B4A; margin-bottom:.75rem; }
 .body { font-size:1rem; line-height:1.7; color:#3D4A73; }
-.sec-img { width:100%; height:22rem; object-fit:cover; }
+.mission-section { background:linear-gradient(135deg, #fff 0%, #fff 62%, #f3f5fa 62%, #f3f5fa 100%); padding:clamp(4rem,8vw,7rem) 0; }
+.mission-layout { display:grid; gap:2.5rem; }
+.mission-heading h2 { max-width:60rem; font-size:clamp(2rem,5vw,4.5rem); line-height:1.08; letter-spacing:-.035em; margin:0; }
+.mission-body { max-width:42rem; }
+.mission-body .body { font-size:clamp(1.0625rem,1.6vw,1.25rem); margin-bottom:2rem; }
+.mission-quote { position:relative; padding:2.25rem 2rem 2rem; background:#1D2B4A; color:white; }
+.mission-quote::after { content:''; position:absolute; right:0; bottom:0; width:5rem; height:.4rem; background:#D9581F; }
+.mission-quote p { position:relative; font-size:clamp(1.125rem,2vw,1.5rem); font-weight:600; line-height:1.55; }
+.quote-mark { position:absolute; top:.15rem; left:1rem; color:#D9581F; font-size:5rem; font-weight:800; line-height:1; opacity:.5; }
+@media(min-width:900px){
+  .mission-layout { grid-template-columns:minmax(0,1.2fr) minmax(20rem,.8fr); gap:3.5rem 5rem; align-items:start; }
+  .mission-heading { grid-column:1 / -1; }
+  .mission-body { padding-top:.75rem; }
+}
 .prog-card { padding:1.5rem; border:1px solid #DDE2EE; background:white; }
 .events-single { max-width:40rem; }
 .event-card { background:#1D2B4A; overflow:hidden; }

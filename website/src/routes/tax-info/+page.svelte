@@ -159,7 +159,7 @@ h4{font-size:.9375rem;font-weight:700;color:#1D2B4A;margin-bottom:.5rem;}
 .res-link{font-size:.875rem;font-weight:500;color:#1D2B4A;transition:color .2s;}
 .res-link:hover{color:#D9581F;}
 .contact-box{padding:1.5rem;background:#F3F5FA;}
-.faq-list{max-width:48rem;}
+.faq-list{width:100%;}
 .faq-item{border-bottom:1px solid #DDE2EE;}
 .faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.25rem 0;background:none;border:none;cursor:pointer;text-align:left;font-size:1rem;font-weight:600;color:#1D2B4A;}
 .faq-icon{font-size:1.25rem;color:#D9581F;transition:transform .2s;flex-shrink:0;}
